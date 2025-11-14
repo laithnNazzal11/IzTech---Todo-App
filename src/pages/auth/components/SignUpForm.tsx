@@ -39,7 +39,7 @@ function SignUpForm() {
 
       <form className="flex w-full flex-col md:gap-4 gap-4">
         {/* Avatar Upload Section */}
-        <div className="flex flex-col items-center sm:gap-[40px] gap-[24px] sm:gap-4 sm:flex-row md:items-center md:justify-start md:pb-[16px] sm:h-[88px]">
+        <div className="flex flex-col items-center  gap-[24px] sm:gap-4 sm:flex-row md:items-center md:justify-start md:pb-[16px] sm:h-[88px]">
           <div className="relative flex-shrink-0">
             <div className="h-[80px] w-[80px] sm:h-[40px] sm:w-[40px] md:h-[40px] md:w-[40px] rounded-full bg-gradient-to-br from-purple-400 via-blue-400 to-pink-400 flex items-center justify-center overflow-hidden">
               {avatarPreview ? (
