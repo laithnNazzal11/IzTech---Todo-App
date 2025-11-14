@@ -4,6 +4,15 @@
     "loading": "Loading...",
     "error": "Error",
     "success": "Success"
+  },
+  "auth": {
+    "signInTitle": "Sign in",
+    "signInSubtitle": "Log in to unlock tailored content and stay connected with your community.",
+    "email": "Email",
+    "password": "Password",
+    "signInCta": "Sign in",
+    "signUpPrompt": "Don't have an account?",
+    "signUpLink": "Sign up"
   }
 }
 
