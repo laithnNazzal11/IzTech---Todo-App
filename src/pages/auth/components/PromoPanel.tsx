@@ -1,29 +1,47 @@
+import { Logo } from "@/components/brand/Logo";
+
 function PromoPanel() {
   return (
-    <aside className="hidden min-h-screen w-[520px] flex-col justify-between bg-primary px-12 pb-12 pt-16 text-white lg:flex">
-      <div className="flex items-center gap-4 text-3xl font-black tracking-wide">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-2xl text-primary">
-          T
-        </div>
-        TODO
+    <aside className="hidden w-full md:flex md:flex-1 md:max-w-[520px] break1040:flex-none flex-col justify-between bg-primary px-[12px] pb-12 pt-[100px] text-white md:min-w-0">
+      {/* Todo Logo */}
+      <div className="mx-auto flex h-[84.82438659667969px] w-[279.42742919921875px] max-w-full flex-col items-center justify-center gap-[10.6px] scale-90 mdlg:scale-100">
+        <Logo variant="dark" size="lg" />
       </div>
 
-      <div className="flex flex-1 flex-col items-center justify-center gap-12">
-        <div className="inline-flex flex-col items-center gap-3 rounded-3xl bg-white/15 px-10 py-8 text-center text-xl font-semibold leading-relaxed">
-          <span>The Haunted ToDo List</span>
-          <span className="text-base font-normal">Tasks That Won&apos;t Stay Buried!</span>
+      {/* Middle Section */}
+      <div className="relative mx-auto h-[322px] w-full max-w-[424px] scale-90 mdlg:scale-100">
+        <div className="absolute left-[83px] top-[182px] flex min-h-[72px] w-[308px] max-w-[90%] flex-col items-center justify-center gap-4 rounded-[8px] bg-white/15 p-[8px] text-center">
+          <p className="font-logo text-[18px] font-[400] leading-[28px] tracking-[0] text-white">
+            The Haunted ToDo List
+            <br />
+            Tasks That Won&apos;t Stay Buried!
+          </p>
         </div>
-        <div className="h-32 w-32 rounded-full bg-white/20" />
-        <div className="h-24 w-24 rounded-full bg-white/25" />
+        <img
+          src="/images/Group.png"
+          alt="Decorative elements"
+          className="absolute left-[-17px] top-[23px] h-[162.6162071224119px] w-[133.98629446401122px] rotate-[1.95deg]"
+        />
       </div>
 
-      <div className="space-y-1 text-sm uppercase tracking-[0.4em] text-white/80">
-        <p>IZETCH VALLY</p>
-        <p>IZETCH VALLY</p>
+      {/* Bottom Section */}
+      <div className="mx-auto flex h-[149.37997436523438px] w-full max-w-[424px] items-center gap-2 scale-90 mdlg:scale-100">
+        <img
+          src="/images/shap2.png"
+          alt="Ghost illustration"
+          className="h-[149.37997436523438px] w-[160.5654296875px] object-contain"
+        />
+        <div className="flex h-[48px] w-[255.4345703125px] flex-col gap-1 tracking-[0.4em]">
+          <p className="font-primary text-[16px] font-[700] leading-[24px] tracking-[0] text-white">
+            Iztech Vally
+          </p>
+          <p className="h-[20px] w-[255.4345703125px] font-primary text-[14px] font-[400] leading-[20px] tracking-[0] text-white opacity-80">
+            Iztech Vally
+          </p>
+        </div>
       </div>
     </aside>
-  )
+  );
 }
 
-export default PromoPanel
-
+export default PromoPanel;

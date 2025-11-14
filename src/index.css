@@ -1,9 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Wet+Paint&family=Tajawal:wght@400;500;600;700&family=Changa:wght@500;600&display=swap');
+
+
+@font-face {
+  font-family: 'Janna LT';
+  src: url('/fonts/ArbFONTS-JannaLT-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  font-synthesis: none;
+}
+
+@font-face {
+  font-family: 'Janna LT';
+  src: url('/fonts/Janna%20LT%20Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
+    --font-primary: 'Janna LT', 'Tajawal', system-ui, -apple-system, BlinkMacSystemFont,
+      'Segoe UI', sans-serif;
+    --font-logo: 'Rubik Wet Paint', 'Changa', cursive;
     --background: 0 0% 100%;
     --foreground: 5 69% 7%;
     --card: 0 0% 100%;
@@ -15,7 +38,7 @@
     --secondary: 0 0% 96%;
     --secondary-foreground: 5 69% 7%;
     --muted: 0 0% 94%;
-    --muted-foreground: 13 20% 32%;
+    --muted-foreground: 0 0% 28%;
     --accent: 0 0% 96%;
     --accent-foreground: 5 69% 7%;
     --destructive: 0 84% 60%;
@@ -23,6 +46,7 @@
     --border: 0 0% 90%;
     --input: 0 0% 90%;
     --ring: 350 96% 43%;
+    --sub-text: 0 0% 28%;
     --radius: 0.5rem;
   }
 
@@ -38,7 +62,7 @@
     --secondary: 7 40% 18%;
     --secondary-foreground: 0 0% 100%;
     --muted: 7 30% 22%;
-    --muted-foreground: 0 0% 80%;
+    --muted-foreground: 0 0% 92%;
     --accent: 7 40% 18%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84% 60%;
@@ -55,5 +79,43 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-synthesis: none;
+  }
+  .font-logo {
+    font-family: var(--font-logo);
+  }
+}
+
+[dir='rtl'] {
+  --font-primary: 'Tajawal', 'Janna LT', 'Changa', sans-serif;
+  --font-logo: 'Changa', 'Rubik Wet Paint', cursive;
+}
+
+[dir='rtl'] body {
+  font-family: var(--font-primary);
+}
+
+[dir='rtl'] .font-logo {
+  font-family: var(--font-logo);
+}
+
+@keyframes toggle-theme {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(-15deg) scale(0.9);
+  }
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+@layer utilities {
+  .animate-toggle-theme {
+    animation: toggle-theme 0.4s ease-in-out;
   }
 }

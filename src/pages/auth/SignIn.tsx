@@ -15,10 +15,10 @@ function SignIn() {
 
   return (
     <section className="flex min-h-screen w-full justify-center bg-background text-foreground">
-      <div className="flex w-full flex-1">
+      <div className="flex w-full flex-1 flex-col md:flex-row md:overflow-hidden">
         <PromoPanel />
 
-        <div className="flex min-h-screen flex-1 flex-col px-6">
+        <div className="flex min-h-screen w-full flex-1 flex-col px-4 sm:px-6 md:min-w-0">
           <AuthHeader
             theme={theme}
             onToggleLanguage={handleLanguageToggle}

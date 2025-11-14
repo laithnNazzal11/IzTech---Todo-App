@@ -6,7 +6,21 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    screens: {
+      sm: '390px',
+      md: '820px',
+      mdlg: '900px',
+      lg: '1024px',
+      break1040: '1040px',
+      xl: '1280px',
+      '2xl': '1536px',
+    },
     extend: {
+      fontFamily: {
+        sans: ['var(--font-primary)', 'system-ui', 'sans-serif'],
+        primary: ['var(--font-primary)', 'system-ui', 'sans-serif'],
+        logo: ['var(--font-logo)', 'cursive'],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -46,6 +60,7 @@ export default {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
+        "sub-text": "hsl(var(--sub-text))",
       },
     },
   },
