@@ -1,0 +1,141 @@
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { Upload } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+
+function SignUpForm() {
+  const { t } = useTranslation();
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUploadClick = () => {
+    const input = document.getElementById('avatar-upload') as HTMLInputElement;
+    input?.click();
+  };
+
+  return (
+    <div className="flex w-[640px] max-w-[640px] md:w-[360px] md:max-w-[360px] flex-col  sm:gap-[24px] md:gap-8 rounded-lg p-6 md:rounded-none md:border-0 sm:bg-transparent md:p-0">
+      <div className="flex w-full h-[116px] sm:h-[92px] flex-col gap-[12px] text-center">
+        <h1 className="font-primary text-[32px] font-[700] leading-[40px] tracking-[0] text-center">
+          {t("auth.signUpTitle")}
+        </h1>
+        <p className="font-primary text-[14px] font-[400] sm:leading-[32px] leading-[24px] tracking-[0.01em] text-center text-muted-foreground">
+          {t("auth.signUpSubtitle")}
+        </p>
+      </div>
+
+      <form className="flex w-full flex-col md:gap-4 gap-4">
+        {/* Avatar Upload Section */}
+        <div className="flex flex-col items-center sm:gap-[40px] gap-[24px] sm:gap-4 sm:flex-row md:items-center md:justify-start md:pb-[16px] sm:h-[88px]">
+          <div className="relative flex-shrink-0">
+            <div className="h-[80px] w-[80px] sm:h-[40px] sm:w-[40px] md:h-[40px] md:w-[40px] rounded-full bg-gradient-to-br from-purple-400 via-blue-400 to-pink-400 flex items-center justify-center overflow-hidden">
+              {avatarPreview ? (
+                <img
+                  src={avatarPreview}
+                  alt="Avatar"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <img
+                  src="/images/Avatar.png"
+                  alt="Avatar"
+                  className="h-full w-full object-contain"
+                /> )}
+            </div>
+          </div>
+          <div className="w-full sm:w-[104px]">
+            <input
+              id="avatar-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarChange}
+              className="hidden w-full"
+ 
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="default"
+              onClick={handleUploadClick}
+              className="w-full h-[36px] py-2 px-1 gap-2 rounded-md border border-border opacity-100"
+            >
+              <Upload className="h-4 w-4 opacity-100" style={{ width: '16px', height: '16px' }} />
+              <span 
+                className="font-primary text-[14px] font-[700] leading-[20px] tracking-[0] opacity-100 inline-flex items-center"
+                style={{ height: '20px' }}
+              >
+                {t("auth.upload")}
+              </span>
+            </Button>
+          </div>
+        </div>
+
+        {/* Form Fields */}
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="name">{t("auth.name")}</Label>
+          <Input
+            id="name"
+            type="text"
+            name="name"
+            placeholder={t("auth.name")}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="email">{t("auth.email")}</Label>
+          <Input
+            id="email"
+            type="email"
+            name="email"
+            placeholder={t("auth.email")}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="password">{t("auth.password")}</Label>
+          <Input
+            id="password"
+            type="password"
+            name="password"
+            placeholder={t("auth.password")}
+          />
+          <p className="font-primary text-[12px] font-[400] leading-[16px] tracking-[0] text-muted-foreground">
+            {t("auth.passwordHint")}
+          </p>
+        </div>
+
+        {/* Submit Button and Footer */}
+        <div className="flex flex-col sm:gap-4 md:gap-4 lg:gap-4 gap-[40px]">
+          <Button className="sm:mt-4 mt-0 h-[36px] w-full rounded-md py-[6px] px-[3px] bg-primary text-primary-foreground hover:bg-primary/90">
+            {t("auth.signUpCta")}
+          </Button>
+          <p className="flex h-[22px] w-full items-center justify-center gap-1 text-center opacity-100">
+            <span className="font-primary text-[14px] font-[400] leading-[160%] tracking-[0] text-muted-foreground">
+              {t("auth.signInPrompt")}{" "}
+            </span>
+            <Link
+              to="/signin"
+              className="font-primary text-[14px] font-[700] leading-[20px] tracking-[0] underline decoration-solid underline-offset-0 decoration-[1px] text-primary"
+            >
+              {t("auth.signInLink")}
+            </Link>
+          </p>
+        </div>
+      </form>
+    </div>
+  );
+}
+
+export default SignUpForm;
+

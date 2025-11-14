@@ -8,11 +8,20 @@
   "auth": {
     "signInTitle": "تسجيل الدخول",
     "signInSubtitle": "سجّل الدخول للحصول على محتوى مخصص والبقاء على اتصال مع مجتمعك.",
+    "signUpTitle": "إنشاء حساب",
+    "signUpSubtitle": "لنبدأ. املأ التفاصيل أدناه لإنشاء حسابك.",
+    "name": "الاسم",
     "email": "البريد الإلكتروني",
     "password": "كلمة المرور",
+    "passwordHint": "الحد الأدنى 8 أحرف.",
+    "upload": "رفع",
+    "confirmPassword": "تأكيد كلمة المرور",
     "signInCta": "تسجيل الدخول",
+    "signUpCta": "إنشاء حساب",
     "signUpPrompt": "ليس لديك حساب؟",
     "signUpLink": "أنشئ حساباً",
+    "signInPrompt": "لديك حساب بالفعل؟",
+    "signInLink": "تسجيل الدخول",
     "promoTitle": "قائمة المهام المسكونة",
     "promoSubtitle": "مهام لن تبقى مدفونة!"
   }

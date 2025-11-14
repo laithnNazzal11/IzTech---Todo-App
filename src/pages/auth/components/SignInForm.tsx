@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -44,12 +45,12 @@ function SignInForm() {
             <span className="font-primary text-[14px] font-[700] leading-[160%] tracking-[0] text-muted-foreground">
               {t("auth.signUpPrompt")}{" "}
             </span>
-            <button
-              type="button"
+            <Link
+              to="/signup"
               className="font-primary text-[14px] font-[700] leading-[20px] tracking-[0] underline decoration-solid underline-offset-0 decoration-[1px] text-primary"
             >
               {t("auth.signUpLink")}
-            </button>
+            </Link>
           </p>
         </div>
       </form>

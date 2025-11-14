@@ -8,11 +8,20 @@
   "auth": {
     "signInTitle": "Sign in",
     "signInSubtitle": "Log in to unlock tailored content and stay connected with your community.",
+    "signUpTitle": "Create an account",
+    "signUpSubtitle": "Let's get started. Fill in the details below to create your account.",
+    "name": "Name",
     "email": "Email",
     "password": "Password",
+    "passwordHint": "Minimum 8 characters.",
+    "upload": "Upload",
+    "confirmPassword": "Confirm Password",
     "signInCta": "Sign in",
+    "signUpCta": "Sign up",
     "signUpPrompt": "Don't have an account?",
     "signUpLink": "Sign up",
+    "signInPrompt": "Already have an account?",
+    "signInLink": "Sign in",
     "promoTitle": "The Haunted ToDo List",
     "promoSubtitle": "Tasks That Won't Stay Buried!"
   }
