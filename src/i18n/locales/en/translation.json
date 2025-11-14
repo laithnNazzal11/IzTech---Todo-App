@@ -12,7 +12,9 @@
     "password": "Password",
     "signInCta": "Sign in",
     "signUpPrompt": "Don't have an account?",
-    "signUpLink": "Sign up"
+    "signUpLink": "Sign up",
+    "promoTitle": "The Haunted ToDo List",
+    "promoSubtitle": "Tasks That Won't Stay Buried!"
   }
 }
 

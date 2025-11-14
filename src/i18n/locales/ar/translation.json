@@ -12,7 +12,9 @@
     "password": "كلمة المرور",
     "signInCta": "تسجيل الدخول",
     "signUpPrompt": "ليس لديك حساب؟",
-    "signUpLink": "أنشئ حساباً"
+    "signUpLink": "أنشئ حساباً",
+    "promoTitle": "قائمة المهام المسكونة",
+    "promoSubtitle": "مهام لن تبقى مدفونة!"
   }
 }
 

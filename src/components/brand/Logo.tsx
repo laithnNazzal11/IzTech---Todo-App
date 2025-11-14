@@ -75,12 +75,20 @@ export function Logo({ variant = 'light', size = 'md', className, theme }: LogoP
       >
         <span
           className={cn('font-logo leading-none', sizes.circleText, circleTextClasses)}
-          style={isDarkMode ? { color: 'hsla(4, 67%, 7%, 1)' } : undefined}
+          style={{
+            fontFamily: "'Rubik Wet Paint', cursive",
+            ...(isDarkMode ? { color: 'hsla(4, 67%, 7%, 1)' } : {}),
+          }}
         >
           T
         </span>
       </div>
-      <span className={cn('font-logo leading-none', sizes.text, textClasses)}>TODO</span>
+      <span 
+        className={cn('font-logo leading-none', sizes.text, textClasses)}
+        style={{ fontFamily: "'Rubik Wet Paint', cursive" }}
+      >
+        TODO
+      </span>
     </div>
   )
 }
