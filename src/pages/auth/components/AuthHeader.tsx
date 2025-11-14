@@ -12,7 +12,7 @@ interface AuthHeaderProps {
 function AuthHeader({ onToggleLanguage, onToggleTheme, theme }: AuthHeaderProps) {
   return (
     <header className="flex h-[72px] w-full items-center justify-between py-2 sm:py-4">
-      <Logo variant="light" size="md" />
+      <Logo variant="light" size="md" theme={theme} />
       <div className="flex items-center gap-3">
         <Button
           variant="ghost"

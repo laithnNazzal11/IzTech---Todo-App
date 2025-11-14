@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import type { Theme } from '@/types'
 
 type LogoVariant = 'light' | 'dark'
 type LogoSize = 'lg' | 'md'
@@ -38,11 +39,24 @@ interface LogoProps {
   variant?: LogoVariant
   size?: LogoSize
   className?: string
+  theme?: Theme
 }
 
-export function Logo({ variant = 'light', size = 'md', className }: LogoProps) {
+export function Logo({ variant = 'light', size = 'md', className, theme }: LogoProps) {
   const sizes = sizeStyles[size]
   const colors = variantStyles[variant]
+
+  // In dark mode, override to show red circle with dark T
+  const isDarkMode = theme === 'dark'
+  const circleClasses = isDarkMode
+    ? 'bg-primary'
+    : colors.circle
+  const circleTextClasses = isDarkMode
+    ? ''
+    : colors.circleText
+  const textClasses = isDarkMode
+    ? 'text-primary'
+    : colors.text
 
   return (
     <div
@@ -56,14 +70,17 @@ export function Logo({ variant = 'light', size = 'md', className }: LogoProps) {
         className={cn(
           'flex aspect-square items-center justify-center rounded-full',
           sizes.circle,
-          colors.circle,
+          circleClasses,
         )}
       >
-        <span className={cn('font-logo leading-none', sizes.circleText, colors.circleText)}>
+        <span
+          className={cn('font-logo leading-none', sizes.circleText, circleTextClasses)}
+          style={isDarkMode ? { color: 'hsla(4, 67%, 7%, 1)' } : undefined}
+        >
           T
         </span>
       </div>
-      <span className={cn('font-logo leading-none', sizes.text, colors.text)}>TODO</span>
+      <span className={cn('font-logo leading-none', sizes.text, textClasses)}>TODO</span>
     </div>
   )
 }
