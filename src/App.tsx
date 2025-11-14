@@ -1,6 +1,7 @@
 import { BrowserRouter } from 'react-router-dom'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { LanguageProvider } from './contexts/LanguageContext'
+import { AppRoutes } from './routes/AppRoutes'
 
 function App() {
   return (
@@ -8,7 +9,7 @@ function App() {
       <ThemeProvider>
         <LanguageProvider>
           <div className="min-h-screen bg-background text-foreground">
-            <h1>Todo App</h1>
+            <AppRoutes />
           </div>
         </LanguageProvider>
       </ThemeProvider>
