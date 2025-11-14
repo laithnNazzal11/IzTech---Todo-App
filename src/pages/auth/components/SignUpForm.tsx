@@ -70,7 +70,7 @@ function SignUpForm() {
               variant="outline"
               size="default"
               onClick={handleUploadClick}
-              className="w-full h-[36px] py-2 px-1 gap-2 rounded-md border border-border opacity-100"
+              className="w-full h-[36px] py-2 px-1 gap-2 rounded-md border border-border dark:border-white opacity-100"
             >
               <Upload className="h-4 w-4 opacity-100" style={{ width: '16px', height: '16px' }} />
               <span 
