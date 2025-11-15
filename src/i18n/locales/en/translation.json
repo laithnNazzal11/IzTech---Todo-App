@@ -37,7 +37,11 @@
     "of": "of",
     "search": "Search...",
     "profile": "Profile",
-    "exit": "Exit"
+    "exit": "Exit",
+    "createNewStatus": "Create New Status",
+    "changeTo": "Change to",
+    "edit": "Edit",
+    "delete": "Delete"
   }
 }
 

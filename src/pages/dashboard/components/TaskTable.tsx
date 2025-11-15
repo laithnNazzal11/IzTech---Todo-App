@@ -1,6 +1,8 @@
+import { useState, useRef } from 'react'
 import { Star, MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from 'react-i18next'
+import TaskActionsPopover from './popovers/TaskActionsPopover'
 
 interface Task {
   id: string
@@ -16,7 +18,28 @@ interface TaskTableProps {
 
 function TaskTable({ tasks }: TaskTableProps) {
   const { t } = useTranslation()
-  
+  const [openPopoverId, setOpenPopoverId] = useState<string | null>(null)
+  const buttonRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({})
+
+  const handleMoreClick = (taskId: string) => {
+    setOpenPopoverId(openPopoverId === taskId ? null : taskId)
+  }
+
+  const handleStatusChange = (taskId: string, newStatus: string) => {
+    // TODO: Implement status change logic
+    console.log(`Change task ${taskId} status to ${newStatus}`)
+  }
+
+  const handleEdit = (taskId: string) => {
+    // TODO: Implement edit logic
+    console.log(`Edit task ${taskId}`)
+  }
+
+  const handleDelete = (taskId: string) => {
+    // TODO: Implement delete logic
+    console.log(`Delete task ${taskId}`)
+  }
+
   return (
     <div className="flex flex-col w-full">
       {/* Table Header */}
@@ -79,10 +102,25 @@ function TaskTable({ tasks }: TaskTableProps) {
                 </p>
               </span>
             </div>
-            <div className="flex items-center justify-end">
-              <Button variant="ghost" size="icon">
+            <div className="flex items-center justify-end relative">
+              <Button
+                ref={(el) => {
+                  buttonRefs.current[task.id] = el
+                }}
+                variant="ghost"
+                size="icon"
+                onClick={() => handleMoreClick(task.id)}
+              >
                 <MoreHorizontal className="h-4 w-4" />
-              </Button> 
+              </Button>
+              <TaskActionsPopover
+                isOpen={openPopoverId === task.id}
+                onClose={() => setOpenPopoverId(null)}
+                triggerRef={{ current: buttonRefs.current[task.id] }}
+                onStatusChange={(newStatus) => handleStatusChange(task.id, newStatus)}
+                onEdit={() => handleEdit(task.id)}
+                onDelete={() => handleDelete(task.id)}
+              />
             </div>
           </div>
         ))}

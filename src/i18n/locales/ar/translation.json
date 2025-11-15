@@ -37,7 +37,11 @@
     "of": "من",
     "search": "بحث...",
     "profile": "الملف",
-    "exit": "خروج"
+    "exit": "خروج",
+    "createNewStatus": "إنشاء حالة جديدة",
+    "changeTo": "تغيير إلى",
+    "edit": "تعديل",
+    "delete": "حذف"
   }
 }
 

@@ -53,6 +53,8 @@ function Popover({ isOpen, onClose, triggerRef, children, width = 134, height = 
         boxShadow: '0px 2px 4px -1px hsla(0, 0%, 0%, 0.06), 0px 4px 6px -1px hsla(0, 0%, 0%, 0.1)',
         paddingTop: '4px',
         paddingBottom: '4px',
+        borderRadius: 'calc(var(--radius) - 2px)',
+        overflow: 'hidden',
       }}
     >
       {children}
