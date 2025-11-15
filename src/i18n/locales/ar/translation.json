@@ -41,7 +41,12 @@
     "createNewStatus": "إنشاء حالة جديدة",
     "changeTo": "تغيير إلى",
     "edit": "تعديل",
-    "delete": "حذف"
+    "delete": "حذف",
+    "createTask": "إنشاء مهمة",
+    "taskTitle": "عنوان المهمة",
+    "taskTitlePlaceholder": "اقتل الرئيس",
+    "descriptionPlaceholder": "اكتب شيئاً...",
+    "create": "إنشاء"
   }
 }
 

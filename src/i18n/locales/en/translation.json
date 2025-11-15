@@ -41,7 +41,12 @@
     "createNewStatus": "Create New Status",
     "changeTo": "Change to",
     "edit": "Edit",
-    "delete": "Delete"
+    "delete": "Delete",
+    "createTask": "Create Task",
+    "taskTitle": "Task title",
+    "taskTitlePlaceholder": "Kill the Boss",
+    "descriptionPlaceholder": "Type somthing...",
+    "create": "Create"
   }
 }
 

@@ -10,6 +10,7 @@ import SearchBar from './components/SearchBar'
 import StatusFilter from './components/StatusFilter'
 import TaskTable from './components/TaskTable'
 import Pagination from './components/Pagination'
+import CreateTaskModal from './components/modals/CreateTaskModal'
 
 // Mock data - replace with actual data fetching
 const mockTasks = [
@@ -34,6 +35,7 @@ function Dashboard() {
   const { toggleTheme } = useTheme()
   const { language, changeLanguage } = useLanguage()
   const [currentPage, setCurrentPage] = useState(1)
+  const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false)
   const itemsPerPage = 7
   const totalItems = 120
 
@@ -55,6 +57,11 @@ function Dashboard() {
   }
 
   const totalPages = Math.ceil(totalItems / itemsPerPage)
+
+  const handleCreateTask = (task: { title: string; description: string; status: string }) => {
+    // TODO: Implement task creation logic
+    console.log('Create task:', task)
+  }
 
   return (
     <section className="flex min-h-screen w-full flex-col bg-background text-foreground px-[8px] sm:px-4 md:px-0">
@@ -88,6 +95,7 @@ function Dashboard() {
               {t('dashboard.myTasks')}
             </h1>
             <Button
+              onClick={() => setIsCreateTaskModalOpen(true)}
               className="create-task-btn w-12 h-8 gap-2 py-2 px-1 rounded-md opacity-100 sm:w-[142px] sm:h-[36px] sm:bg-primary sm:text-primary-foreground sm:hover:bg-primary/90"
             >
               <Plus className="h-4 w-4 text-white sm:hidden" />
@@ -118,6 +126,13 @@ function Dashboard() {
         </div>
       </DashboardContent>
       </div>
+
+      {/* Create Task Modal */}
+      <CreateTaskModal
+        isOpen={isCreateTaskModalOpen}
+        onClose={() => setIsCreateTaskModalOpen(false)}
+        onCreateTask={handleCreateTask}
+      />
     </section>
   )
 }

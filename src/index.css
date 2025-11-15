@@ -114,8 +114,34 @@
   }
 }
 
+@keyframes slide-in-from-bottom {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-out-to-bottom {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
 @layer utilities {
   .animate-toggle-theme {
     animation: toggle-theme 0.4s ease-in-out;
+  }
+  
+  .slide-in-from-bottom-full {
+    animation: slide-in-from-bottom 0.3s ease-out;
+  }
+  
+  .slide-out-to-bottom-full {
+    animation: slide-out-to-bottom 0.3s ease-in;
   }
 }
