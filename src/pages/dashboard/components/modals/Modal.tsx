@@ -62,7 +62,9 @@ function Modal({
           maxWidth: '100vw',
           display: 'flex',
         }}
+        onOpenAutoFocus={(e) => e.preventDefault()}
         onInteractOutside={(e) => {
+          // Prevent closing only when showBackdrop is false
           if (!showBackdrop) {
             e.preventDefault()
           }

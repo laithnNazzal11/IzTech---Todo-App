@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useTranslation } from 'react-i18next'
 import Popover from './Popover'
+import CreateStatusModal from '../modals/CreateStatusModal'
 
 interface Status {
   id: string
@@ -25,13 +27,25 @@ const statuses: Status[] = [
 function StatusPopover({ isOpen, onClose, triggerRef }: StatusPopoverProps) {
   const { theme } = useTheme()
   const { t } = useTranslation()
+  const [isCreateStatusModalOpen, setIsCreateStatusModalOpen] = useState(false)
 
   const handleCreateNewStatus = () => {
     onClose()
-    // TODO: Implement create new status functionality
+    setIsCreateStatusModalOpen(true)
+  }
+
+  const handleCloseCreateStatusModal = () => {
+    setIsCreateStatusModalOpen(false)
+  }
+
+  const handleCreateStatus = (status: { title: string; color: string }) => {
+    // TODO: Implement actual status creation logic
+    console.log('Creating status:', status)
+    setIsCreateStatusModalOpen(false)
   }
 
   return (
+    <>
     <Popover
       isOpen={isOpen}
       onClose={onClose}
@@ -113,6 +127,14 @@ function StatusPopover({ isOpen, onClose, triggerRef }: StatusPopoverProps) {
         </div>
       </div>
     </Popover>
+    
+    {/* Create Status Modal */}
+    <CreateStatusModal
+      isOpen={isCreateStatusModalOpen}
+      onClose={handleCloseCreateStatusModal}
+      onCreateStatus={handleCreateStatus}
+    />
+    </>
   )
 }
 

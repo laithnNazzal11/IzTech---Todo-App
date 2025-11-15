@@ -46,7 +46,11 @@
     "taskTitle": "Task title",
     "taskTitlePlaceholder": "Kill the Boss",
     "descriptionPlaceholder": "Type somthing...",
-    "create": "Create"
+    "create": "Create",
+    "createStatus": "Create Status",
+    "statusTitle": "Status title",
+    "statusTitlePlaceholder": "Done",
+    "selectColor": "Select Color"
   }
 }
 

@@ -46,7 +46,11 @@
     "taskTitle": "عنوان المهمة",
     "taskTitlePlaceholder": "اقتل الرئيس",
     "descriptionPlaceholder": "اكتب شيئاً...",
-    "create": "إنشاء"
+    "create": "إنشاء",
+    "createStatus": "إنشاء حالة",
+    "statusTitle": "عنوان الحالة",
+    "statusTitlePlaceholder": "تم",
+    "selectColor": "اختر اللون"
   }
 }
 
