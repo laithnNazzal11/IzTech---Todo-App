@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
 import { v4 as uuidv4 } from 'uuid'
@@ -19,12 +19,18 @@ import Pagination from './components/Pagination'
 import CreateTaskModal from './components/modals/CreateTaskModal'
 import CreateStatusModal from './components/modals/CreateStatusModal'
 import EmptyState from './components/EmptyState'
+import TaskTableSkeleton from './components/TaskTableSkeleton'
 
 function Dashboard() {
   const { t } = useTranslation()
   const { theme, toggleTheme } = useTheme()
   const { language, changeLanguage } = useLanguage()
   const navigate = useNavigate()
+  const location = useLocation()
+  
+  // Check if navigating from signup
+  const fromSignup = (location.state as { fromSignup?: boolean })?.fromSignup || false
+    
   const [currentPage, setCurrentPage] = useState(1)
   const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false)
   const [isCreateStatusModalOpen, setIsCreateStatusModalOpen] = useState(false)
@@ -34,12 +40,15 @@ function Dashboard() {
   const [status, setStatus] = useState<Status[]>([])
   const [isLoadingPage, setIsLoadingPage] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
+  const [isInitialLoading, setIsInitialLoading] = useState(true)
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('')
   
+  
   // Responsive items per page: 4 for mobile (< 391px), 7 for desktop (>= 391px)
-  const itemsPerPage = windowWidth < 391 ? 4 : 7
+  const isMobile = windowWidth < 391
+  const itemsPerPage = isMobile ? 4 : 7
 
   useEffect(() => {
     // Redirect to signin if not authenticated
@@ -48,13 +57,22 @@ function Dashboard() {
       return
     }
 
-    // Load tasks and status from current_user in localStorage
-    const currentUser = getCurrentUser()
-    if (currentUser) {
-      setTasks(currentUser.tasks || [])
-      setStatus(currentUser.status || [])
+    // Load tasks and status from current_user in localStorage with 2s delay
+    const loadData = async (): Promise<void> => {
+      setIsInitialLoading(true)
+      // Mock loading delay of 3 seconds
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+      
+      const currentUser = getCurrentUser()
+      if (currentUser) {
+        setTasks(currentUser.tasks || [])
+        setStatus(currentUser.status || [])
+      }
+      setIsInitialLoading(false)
     }
-  }, [navigate])
+
+    loadData()
+  }, [])
 
   // Track window width for responsive pagination
   useEffect(() => {
@@ -257,8 +275,34 @@ function Dashboard() {
 
   // Check if status array is empty
   const isStatusEmpty = !status || status.length === 0
-  // Check if tasks array is empty (but status exists)
-  const isTasksEmpty = !tasks || tasks.length === 0
+  // Check if tasks array is empty (but status exists) - don't consider empty during initial loading
+  const isTasksEmpty = !isInitialLoading && (!tasks || tasks.length === 0)
+
+  if(isInitialLoading && !fromSignup) {
+    return (
+      <section className="flex h-screen w-full flex-col bg-background text-foreground px-[8px] sm:px-4 md:px-0 overflow-hidden">
+        {/* Top Container */}
+        <div className="w-full flex-shrink-0">
+          <DashboardHeader
+            onToggleLanguage={handleLanguageToggle}
+            onToggleTheme={toggleTheme}
+          />
+        </div>
+        
+        {/* Bottom Container */}
+        <div className="w-full flex-1 min-h-0 mt-4 md:mt-10">
+          <DashboardContent centerContent={false}>
+            <TaskTableSkeleton itemsPerPage={isMobile ? 4 : 7} />
+          </DashboardContent>
+        </div>
+      </section>
+    )
+  }
+
+  if (fromSignup && location.state) {
+    // Replace current location without the fromSignup state
+    navigate(location.pathname, { replace: true, state: {} })
+  }
 
   return (
     <section className="flex h-screen w-full flex-col bg-background text-foreground px-[8px] sm:px-4 md:px-0 overflow-hidden">
@@ -269,7 +313,6 @@ function Dashboard() {
           onToggleTheme={toggleTheme}
         />
       </div>
-
       {/* Bottom Container */}
       <div className="w-full flex-1 min-h-0 mt-4 md:mt-10">
         <DashboardContent centerContent={isStatusEmpty}>
@@ -300,7 +343,6 @@ function Dashboard() {
                 <StatusFilter onCreateStatus={handleCreateStatus} isLoading={isCreatingStatus} />
               </div>
 
-              {/* Task Table or Empty State */}
               {isTasksEmpty ? (
                 <EmptyState 
                   isStatus={false} 
@@ -319,6 +361,8 @@ function Dashboard() {
                       tasks={paginatedTasks} 
                       onToggleFavorite={handleToggleFavorite}
                       isLoading={isLoadingPage || isSearching}
+                      isInitialLoading={false}
+                      itemsPerPage={itemsPerPage}
                     />
                   </div>
 

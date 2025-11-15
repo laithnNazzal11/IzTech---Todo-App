@@ -5,14 +5,17 @@ import { useTranslation } from 'react-i18next'
 import { getCurrentUser } from '@/utils/auth'
 import type { Task, Status } from '@/types'
 import TaskActionsPopover from './popovers/TaskActionsPopover'
+import TaskTableSkeleton from './TaskTableSkeleton'
 
 interface TaskTableProps {
   tasks: Task[]
   onToggleFavorite?: (taskId: string) => void
   isLoading?: boolean
+  isInitialLoading?: boolean
+  itemsPerPage?: number
 }
 
-function TaskTable({ tasks, onToggleFavorite, isLoading = false }: TaskTableProps) {
+function TaskTable({ tasks, onToggleFavorite, isLoading = false, isInitialLoading = false, itemsPerPage = 7 }: TaskTableProps) {
   const { t } = useTranslation()
   const [openPopoverId, setOpenPopoverId] = useState<string | null>(null)
   const [statuses, setStatuses] = useState<Status[]>([])

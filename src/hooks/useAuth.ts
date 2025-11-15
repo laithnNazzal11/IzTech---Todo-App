@@ -45,8 +45,8 @@ export function useAuth(): UseAuthReturn {
       // Create user (this will validate and save to localStorage)
       createUser(userData)
 
-      // Navigate to dashboard on success
-      navigate('/dashboard')
+      // Navigate to dashboard on success with state to skip skeleton
+      navigate('/dashboard', { state: { fromSignup: true } })
     } catch (err) {
       // Set error message
       const errorMessage = err instanceof Error ? err.message : 'An error occurred during signup'
