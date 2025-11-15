@@ -181,7 +181,6 @@ export function createUser(data: SignUpData): User {
   storage.set(STORAGE_KEYS.USERS, users)
 
   // Set as current user (authenticate user)
-  console.log("newUser",newUser)
   storage.set(STORAGE_KEYS.CURRENT_USER, newUser)
 
   return newUser

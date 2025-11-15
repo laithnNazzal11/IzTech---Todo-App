@@ -27,7 +27,6 @@ function StatusPopover({ isOpen, onClose, triggerRef, onCreateStatus, isLoading 
   const { t } = useTranslation()
   const [isCreateStatusModalOpen, setIsCreateStatusModalOpen] = useState(false)
   const [statusesWithCount, setStatusesWithCount] = useState<StatusWithCount[]>([])
-  console.log("statusesWithCount",statusesWithCount)
 
   useEffect(() => {
     // Load current user from localStorage
@@ -38,7 +37,6 @@ function StatusPopover({ isOpen, onClose, triggerRef, onCreateStatus, isLoading 
       return
     }
 
-    console.log("currentUser",currentUser)
 
     const tasks = currentUser.tasks || []
     const statuses = currentUser.status || []

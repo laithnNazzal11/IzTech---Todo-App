@@ -27,7 +27,6 @@ export const storage = {
   },
   set: <T>(key: string, value: T): void => {
     try {
-      console.log("key",key,value)
       localStorage.setItem(key, JSON.stringify(value))
     } catch (error) {
       console.error('Error saving to localStorage:', error)

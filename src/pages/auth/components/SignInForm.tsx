@@ -39,7 +39,7 @@ function SignInForm() {
       });
     } catch (err) {
       // Error is handled by the hook and displayed via error state
-      console.error('Signin error:', err);
+      console.error("Signin error:", err);
     }
   };
 
@@ -54,7 +54,10 @@ function SignInForm() {
         </p>
       </div>
 
-      <form className="flex w-full flex-col md:gap-4 sm:gap-[42px] gap-[40px]" onSubmit={handleSubmit}>
+      <form
+        className="flex w-full flex-col md:gap-4 sm:gap-[42px] gap-[40px]"
+        onSubmit={handleSubmit}
+      >
         {/* Error Message */}
         {error && (
           <div className="flex flex-col gap-2 p-3 rounded-md bg-destructive/10 border border-destructive/20">
@@ -93,7 +96,7 @@ function SignInForm() {
           />
         </div>
         <div className="flex flex-col sm:gap-4 md:gap-4 lg:gap-4 gap-[40px] ">
-          <Button 
+          <Button
             type="submit"
             disabled={isLoading}
             className={cn(
