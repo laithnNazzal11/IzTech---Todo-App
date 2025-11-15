@@ -41,49 +41,25 @@ function StatusPopover({ isOpen, onClose, triggerRef }: StatusPopoverProps) {
     >
       <div className="flex flex-col h-full">
         {/* Top Box - Status List */}
-        <div
-          className="opacity-100"
-          style={{
-            width: '210px',
-            height: '84px',
-            paddingRight: '8px',
-            paddingLeft: '8px',
-          }}
-        >
+        <div className="opacity-100 w-[210px] h-[84px] pr-2 pl-2">
           <div className="flex flex-col h-full gap-2 py-1">
             {statuses.map((status) => (
               <div
                 key={status.id}
-                className="flex items-center justify-between opacity-100"
-                style={{
-                  paddingRight: '4px',
-                  paddingLeft: '4px',
-                }}
+                className="flex items-center justify-between opacity-100 pr-1 pl-1"
               >
                 <div className="flex items-center gap-2">
                   <div
-                    className="rounded-sm opacity-100"
+                    className="rounded-sm opacity-100 w-4 h-4"
                     style={{
-                      width: '16px',
-                      height: '16px',
                       backgroundColor: status.color,
                     }}
                   />
-                  <span
-                    className="font-primary text-sm"
-                    style={{
-                      color: theme === 'dark' ? 'hsla(0, 0%, 100%, 1)' : undefined,
-                    }}
-                  >
+                  <span className={`font-primary text-sm ${theme === 'dark' ? 'text-white' : 'text-foreground'}`}>
                     {status.name}
                   </span>
                 </div>
-                <span
-                  className="font-primary text-sm"
-                  style={{
-                    color: theme === 'dark' ? 'hsla(0, 0%, 100%, 1)' : undefined,
-                  }}
-                >
+                <span className={`font-primary text-sm ${theme === 'dark' ? 'text-white' : 'text-foreground'}`}>
                   {status.count}
                 </span>
               </div>
@@ -92,42 +68,16 @@ function StatusPopover({ isOpen, onClose, triggerRef }: StatusPopoverProps) {
         </div>
 
         {/* Center Divider */}
-        <div
-          className="opacity-100 flex items-center justify-center"
-          style={{
-            width: '100%',
-            height: '8px',
-            paddingTop: '4px',
-            paddingBottom: '4px',
-          }}
-        >
-          <div
-            style={{
-              width: '100%',
-              height: '0px',
-              borderTop: theme === 'dark' ? '1px solid hsla(0, 0%, 16%, 1)' : '1px solid hsla(200, 33%, 98%, 1)',
-            }}
-          />
+        <div className="opacity-100 flex items-center justify-center w-full h-2 pt-1 pb-1">
+          <div className={`w-full h-0 border-t ${theme === 'dark' ? 'border-t-[hsla(0,0%,16%,1)]' : 'border-t-[hsla(200,33%,98%,1)]'}`} />
         </div>
 
         {/* Bottom Box - Create New Status */}
-        <div
-          className="opacity-100"
-          style={{
-            height: '28px',
-            paddingRight: '8px',
-            paddingLeft: '8px',
-          }}
-        >
+        <div className="opacity-100 h-7 pr-2 pl-2">
           <button
             onClick={handleCreateNewStatus}
-            className="flex items-center hover:bg-muted transition-colors opacity-100 w-full"
+            className="flex items-center hover:bg-muted transition-colors opacity-100 w-full h-7 pt-1.5 pr-1 pb-1.5 pl-1"
             style={{
-              height: '28px',
-              paddingTop: '6px',
-              paddingRight: '4px',
-              paddingBottom: '6px',
-              paddingLeft: '4px',
               borderRadius: 'calc(var(--radius) - 4px)',
             }}
           >
@@ -155,12 +105,7 @@ function StatusPopover({ isOpen, onClose, triggerRef }: StatusPopoverProps) {
                   </clipPath>
                 </defs>
               </svg>
-              <span
-                className="font-primary text-sm"
-                style={{
-                  color: theme === 'dark' ? 'hsla(0, 0%, 100%, 1)' : undefined,
-                }}
-              >
+              <span className={`font-primary text-sm ${theme === 'dark' ? 'text-white' : 'text-foreground'}`}>
                 {t('dashboard.createNewStatus')}
               </span>
             </div>

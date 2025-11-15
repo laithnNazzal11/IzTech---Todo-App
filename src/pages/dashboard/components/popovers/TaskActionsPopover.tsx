@@ -30,8 +30,6 @@ function TaskActionsPopover({
   const { theme } = useTheme()
   const { language } = useLanguage()
   const { t } = useTranslation()
-  
-  const iconTextGap = language === 'ar' ? '12px' : '8px'
 
   const handleStatusClick = (status: string) => {
     onStatusChange?.(status)
@@ -58,38 +56,16 @@ function TaskActionsPopover({
     >
       <div className="flex flex-col h-full overflow-hidden">
         {/* First Box - Change to Section */}
-        <div
-          className="opacity-100 overflow-hidden"
-          style={{
-            width: '100%',
-            maxWidth: '210px',
-            height: '84px',
-            paddingRight: '4px',
-            paddingLeft: '4px',
-          }}
-        >
+        <div className="opacity-100 overflow-hidden w-full max-w-[210px] h-[84px] pr-1 pl-1">
           <div className="flex flex-col h-full gap-2 py-1">
             {/* Change to Header */}
-            <div
-              className="flex items-center opacity-100"
-              style={{
-                paddingRight: '6px',
-                paddingLeft: '6px',
-              }}
-            >
+            <div className="flex items-center opacity-100 pr-1.5 pl-1.5">
               <Zap
-                className="h-4 w-4"
+                className={`h-4 w-4 ${theme === 'dark' ? 'text-white' : 'text-foreground'}`}
                 strokeWidth={2}
-                style={{
-                  color: theme === 'dark' ? 'hsla(0, 0%, 100%, 1)' : undefined,
-                }}
               />
               <span
-                className="font-primary text-sm"
-                style={{
-                  color: theme === 'dark' ? 'hsla(0, 0%, 100%, 1)' : undefined,
-                  [language === 'ar' ? 'marginRight' : 'marginLeft']: iconTextGap,
-                }}
+                className={`font-primary text-sm ${theme === 'dark' ? 'text-white' : 'text-foreground'} ${language === 'ar' ? 'mr-3' : 'ml-2'}`}
               >
                 {t('dashboard.changeTo')}
               </span>
@@ -103,23 +79,12 @@ function TaskActionsPopover({
                 className="flex items-center hover:bg-muted transition-colors opacity-100"
               >
                 <div
-                  className="rounded-sm opacity-100"
+                  className="rounded-sm opacity-100 w-4 h-4 mx-2"
                   style={{
-                    width: '16px',
-                    height: '16px',
                     backgroundColor: status.color,
-                    marginLeft: '8px',
-                    marginRight: '8px', 
-
                   }}
                 />
-                <span
-                  className="font-primary text-sm"
-                  style={{
-                    color: theme === 'dark' ? 'hsla(0, 0%, 100%, 1)' : undefined,
-
-                  }}
-                >
+                <span className={`font-primary text-sm ${theme === 'dark' ? 'text-white' : 'text-foreground'}`}>
                   {status.name}
                 </span>
               </button>
@@ -128,43 +93,15 @@ function TaskActionsPopover({
         </div>
 
         {/* Center Divider */}
-        <div
-          className="opacity-100 flex items-center justify-center"
-          style={{
-            width: '100%',
-            height: '8px',
-            paddingTop: '4px',
-            paddingBottom: '4px',
-          }}
-        >
-          <div
-            style={{
-              width: '100%',
-              height: '0px',
-              borderTop: theme === 'dark' ? '1px solid hsla(0, 0%, 16%, 1)' : '1px solid hsla(200, 33%, 98%, 1)',
-            }}
-          />
+        <div className="opacity-100 flex items-center justify-center w-full h-2 pt-1 pb-1">
+          <div className={`w-full h-0 border-t ${theme === 'dark' ? 'border-t-[hsla(0,0%,16%,1)]' : 'border-t-[hsla(200,33%,98%,1)]'}`} />
         </div>
 
         {/* Second Box - Edit */}
-        <div
-          className="opacity-100 overflow-hidden"
-          style={{
-            width: '100%',
-            maxWidth: '210px',
-            height: '28px',
-            paddingRight: '6px',
-            paddingLeft: '6px',
-          }}
-        >
+        <div className="opacity-100 overflow-hidden w-full max-w-[210px] h-7 pr-1.5 pl-1.5">
           <button
             onClick={handleEdit}
-            className="flex items-center hover:bg-muted transition-colors opacity-100 w-full"
-            style={{
-              paddingRight: '6px',
-              paddingLeft: '6px',
-              height: '100%',
-            }}
+            className="flex items-center hover:bg-muted transition-colors opacity-100 w-full h-full pr-1.5 pl-1.5"
           >
             <svg
               width="16"
@@ -183,11 +120,7 @@ function TaskActionsPopover({
               />
             </svg>
             <span
-              className="font-primary text-sm"
-              style={{
-                color: theme === 'dark' ? 'hsla(0, 0%, 100%, 1)' : undefined,
-                [language === 'ar' ? 'marginRight' : 'marginLeft']: iconTextGap,
-              }}
+              className={`font-primary text-sm ${theme === 'dark' ? 'text-white' : 'text-foreground'} ${language === 'ar' ? 'mr-3' : 'ml-2'}`}
             >
               {t('dashboard.edit')}
             </span>
@@ -195,43 +128,15 @@ function TaskActionsPopover({
         </div>
 
         {/* Divider between Edit and Delete */}
-        <div
-          className="opacity-100 flex items-center justify-center"
-          style={{
-            width: '100%',
-            height: '8px',
-            paddingTop: '4px',
-            paddingBottom: '4px',
-          }}
-        >
-          <div
-            style={{
-              width: '100%',
-              height: '0px',
-              borderTop: theme === 'dark' ? '1px solid hsla(0, 0%, 16%, 1)' : '1px solid hsla(200, 33%, 98%, 1)',
-            }}
-          />
+        <div className="opacity-100 flex items-center justify-center w-full h-2 pt-1 pb-1">
+          <div className={`w-full h-0 border-t ${theme === 'dark' ? 'border-t-[hsla(0,0%,16%,1)]' : 'border-t-[hsla(200,33%,98%,1)]'}`} />
         </div>
 
         {/* Third Box - Delete */}
-        <div
-          className="opacity-100 overflow-hidden"
-          style={{
-            width: '100%',
-            maxWidth: '210px',
-            height: '28px',
-            paddingRight: '6px',
-            paddingLeft: '6px',
-          }}
-        >
+        <div className="opacity-100 overflow-hidden w-full max-w-[210px] h-7 pr-1.5 pl-1.5">
           <button
             onClick={handleDelete}
-            className="flex items-center hover:bg-muted transition-colors opacity-100 w-full"
-            style={{
-              paddingRight: '6px',
-              paddingLeft: '6px',
-              height: '100%',
-            }}
+            className="flex items-center hover:bg-muted transition-colors opacity-100 w-full h-full pr-1.5 pl-1.5"
           >
             <svg
               width="16"
@@ -250,11 +155,7 @@ function TaskActionsPopover({
               />
             </svg>
             <span
-              className="font-primary text-sm"
-              style={{
-                color: theme === 'dark' ? 'hsla(0, 0%, 100%, 1)' : undefined,
-                [language === 'ar' ? 'marginRight' : 'marginLeft']: iconTextGap,
-              }}
+              className={`font-primary text-sm ${theme === 'dark' ? 'text-white' : 'text-foreground'} ${language === 'ar' ? 'mr-3' : 'ml-2'}`}
             >
               {t('dashboard.delete')}
             </span>
