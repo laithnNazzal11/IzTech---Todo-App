@@ -35,7 +35,7 @@ function Dashboard() {
   const [isLoadingPage, setIsLoadingPage] = useState(false)
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   
-  // Responsive items per page: 4 for mobile (< 640px), 7 for desktop (>= 640px)
+  // Responsive items per page: 4 for mobile (< 391px), 7 for desktop (>= 391px)
   const itemsPerPage = windowWidth < 391 ? 4 : 7
 
   useEffect(() => {
