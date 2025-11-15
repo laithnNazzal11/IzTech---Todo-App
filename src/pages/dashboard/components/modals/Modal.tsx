@@ -34,11 +34,9 @@ function Modal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         className={cn(
-          // Ensure always centered on sm and above, bottom on small screens with space for dropdowns
-          // Use flex-end alignment on small screens, center on larger screens
+
           'items-end sm:items-center',
           !isAutoSize && 'p-0 overflow-hidden',
-          // Allow overflow for select dropdowns in auto-size modals
           isAutoSize && 'overflow-visible',
           !isAutoSize && (theme === 'dark' 
             ? 'bg-[hsla(4,67%,7%,1)] border-[hsla(0,0%,16%,1)]' 
