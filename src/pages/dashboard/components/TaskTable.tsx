@@ -34,7 +34,7 @@ function TaskTable({ tasks }: TaskTableProps) {
         {tasks.map((task) => (
           <div
             key={task.id}
-            className="grid grid-cols-[24px_2fr_3fr_.5fr_10px] gap-4 py-4 "
+            className="grid grid-cols-[24px_2fr_3fr_.5fr_10px] gap-4 py-3 "
           >
             <div className="flex items-center justify-center" style={{ width: '24px' }}>
               {task.isFavorite ? (
@@ -43,8 +43,12 @@ function TaskTable({ tasks }: TaskTableProps) {
                 <Star className="h-6 w-6 text-primary opacity-100" />
               )}
             </div>
-            <div className="font-primary text-sm text-foreground flex items-center">{task.title}</div>
-            <div className="font-primary text-sm text-muted-foreground">{task.description}</div>
+            <div className="font-primary text-sm text-foreground flex items-center min-w-0 overflow-hidden">
+              <span className="truncate">{task.title}</span>
+            </div>
+            <div className="font-primary text-sm text-muted-foreground flex items-center min-w-0 overflow-hidden">
+              <span className="truncate">{task.description}</span>
+            </div>
             <div className="flex items-center justify-center gap-[10px]">
               <span
                 className="w-[104px] h-[38px] rounded-md flex items-center justify-center opacity-100"
@@ -64,7 +68,7 @@ function TaskTable({ tasks }: TaskTableProps) {
             </div>
             <div className="flex items-center justify-end">
               <Button variant="ghost" size="icon">
-                <MoreHorizontal className="h-5 w-8" />
+                <MoreHorizontal className="h-4 w-4" />
               </Button> 
             </div>
           </div>

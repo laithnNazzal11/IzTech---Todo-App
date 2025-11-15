@@ -14,7 +14,7 @@ function DashboardHeader({ onToggleLanguage, onToggleTheme }: DashboardHeaderPro
   const { language } = useLanguage()
 
   return (
-    <header className="flex w-full mt-6 h-[84px] sm:h-[84px] md:h-[64px] items-center justify-between rounded-lg md:rounded-[8px] opacity-100 py-[22px] px-4 sm:py-[22px] sm:px-8 md:py-0 md:px-8">
+    <header className="flex w-full mt-3 h-[84px] sm:h-[84px] md:h-[64px] items-center justify-between rounded-lg md:rounded-[8px] opacity-100 py-[22px] px-4 sm:py-[22px] sm:px-8 md:py-0 md:px-8">
       <div className="w-[92.5px] h-[28px] opacity-100">
         <Logo variant="light" size="md" theme={theme} className="gap-[3.5px]" />
       </div>
