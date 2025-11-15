@@ -32,7 +32,7 @@ function Pagination({
     theme === "dark" ? "hsla(0, 0%, 16%, 1)" : "hsla(200, 33%, 98%, 1)";
 
   return (
-    <div className="flex items-center justify-between w-full">
+    <div className="flex items-center justify-between w-full mb-12 sm:mb-0">
       <Button
         variant="outline"
         onClick={onPrevious}

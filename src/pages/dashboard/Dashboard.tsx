@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Plus } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { Button } from '@/components/ui/button'
@@ -56,7 +57,19 @@ function Dashboard() {
   const totalPages = Math.ceil(totalItems / itemsPerPage)
 
   return (
-    <section className="flex min-h-screen w-full flex-col bg-background text-foreground">
+    <section className="flex min-h-screen w-full flex-col bg-background text-foreground px-[8px] sm:px-4 md:px-0">
+      <style>{`
+        .create-task-btn {
+          background: hsla(350, 96%, 43%, 1);
+          box-shadow: 0px 1px 2px 0px hsla(0, 0%, 0%, 0.06), 0px 1px 3px 0px hsla(0, 0%, 0%, 0.1);
+        }
+        @media (min-width: 391px) {
+          .create-task-btn {
+            background: hsl(var(--primary)) !important;
+            box-shadow: none !important;
+          }
+        }
+      `}</style>
       {/* Top Container */}
       <div className="w-full">
         <DashboardHeader
@@ -75,9 +88,10 @@ function Dashboard() {
               {t('dashboard.myTasks')}
             </h1>
             <Button
-              className="w-[142px] h-[36px] gap-2 bg-primary text-primary-foreground hover:bg-primary/90 opacity-100"
+              className="create-task-btn w-12 h-8 gap-2 py-2 px-1 rounded-md opacity-100 sm:w-[142px] sm:h-[36px] sm:bg-primary sm:text-primary-foreground sm:hover:bg-primary/90"
             >
-              {t('dashboard.createNewTask')}
+              <Plus className="h-4 w-4 text-white sm:hidden" />
+              <span className="hidden sm:inline">{t('dashboard.createNewTask')}</span>
             </Button>
           </div>
 

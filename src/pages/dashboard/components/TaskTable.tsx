@@ -20,10 +20,10 @@ function TaskTable({ tasks }: TaskTableProps) {
   return (
     <div className="flex flex-col w-full">
       {/* Table Header */}
-      <div className="grid grid-cols-[24px_2fr_3fr_.5fr_10px] gap-4 pb-2">
+      <div className="grid grid-cols-[24px_1fr_0.2fr_10px] sm:grid-cols-[24px_2fr_3fr_.5fr_10px] gap-y-4 gap-x-6 sm:gap-4 pb-2">
         <div className="font-primary text-sm font-[700] text-foreground"></div>
         <div className="font-primary text-sm font-[700] text-foreground">{t('dashboard.title')}</div>
-        <div className="font-primary text-sm font-[700] text-foreground">{t('dashboard.description')}</div>
+        <div className="font-primary text-sm font-[700] text-foreground hidden sm:block">{t('dashboard.description')}</div>
         <div className="font-primary text-sm font-[700] text-foreground flex items-center justify-center w-full">{t('dashboard.status')}</div>
         <div className="font-primary text-sm font-[700] text-foreground flex"></div>
 
@@ -34,7 +34,7 @@ function TaskTable({ tasks }: TaskTableProps) {
         {tasks.map((task) => (
           <div
             key={task.id}
-            className="grid grid-cols-[24px_2fr_3fr_.5fr_10px] gap-4 py-3 "
+            className="grid grid-cols-[24px_1fr_0.2fr_10px] sm:grid-cols-[24px_2fr_3fr_.5fr_10px] gap-y-3 gap-x-6 sm:gap-4 py-3 "
           >
             <div className="flex items-center justify-center" style={{ width: '24px' }}>
               {task.isFavorite ? (
@@ -46,12 +46,21 @@ function TaskTable({ tasks }: TaskTableProps) {
             <div className="font-primary text-sm text-foreground flex items-center min-w-0 overflow-hidden">
               <span className="truncate">{task.title}</span>
             </div>
-            <div className="font-primary text-sm text-muted-foreground flex items-center min-w-0 overflow-hidden">
+            <div className="font-primary text-sm text-muted-foreground hidden sm:flex sm:items-center min-w-0 overflow-hidden">
               <span className="truncate">{task.description}</span>
             </div>
             <div className="flex items-center justify-center gap-[10px]">
+              {/* Mobile: Small colored box */}
+              <div
+                className="w-6 h-6 opacity-100 sm:hidden"
+                style={{
+                  background: 'hsla(237, 77%, 67%, 1)',
+                  borderRadius: '4.8px',
+                }}
+              />
+              {/* Desktop: Status badge */}
               <span
-                className="w-[104px] h-[38px] rounded-md flex items-center justify-center opacity-100"
+                className="hidden sm:flex w-[104px] h-[38px] rounded-md items-center justify-center opacity-100"
                 style={{
                   background: 'hsla(255, 83%, 62%, 0.1)',
                 }}
