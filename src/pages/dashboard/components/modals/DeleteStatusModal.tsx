@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { X } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import Modal from "./Modal";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -8,8 +8,9 @@ import { useLanguage } from "@/contexts/LanguageContext";
 interface DeleteStatusModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onDelete?: () => void;
+  onDelete?: () => void | Promise<void>;
   statusName?: string;
+  isLoading?: boolean;
 }
 
 function DeleteStatusModal({
@@ -17,6 +18,7 @@ function DeleteStatusModal({
   onClose,
   onDelete,
   statusName = "To Do",
+  isLoading = false,
 }: DeleteStatusModalProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -27,9 +29,10 @@ function DeleteStatusModal({
     ? `${statusName} ${t("dashboard.statusWord")}` 
     : `To Do ${t("dashboard.statusWord")}`;
 
-  const handleDelete = () => {
-    onDelete?.();
-    onClose();
+  const handleDelete = async () => {
+    if (isLoading) return;
+    await onDelete?.();
+    // Don't close immediately - let parent handle closing after deletion completes
   };
 
   return (
@@ -53,8 +56,9 @@ function DeleteStatusModal({
         {/* Close Button - Fixed Position */}
         <button
           onClick={onClose}
+          disabled={isLoading}
           className={cn(
-            "absolute top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none z-10",
+            "absolute top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 z-10",
             isRTL ? "left-6" : "right-6"
           )}
         >
@@ -82,9 +86,22 @@ function DeleteStatusModal({
         {/* Delete Button */}
         <Button
           onClick={handleDelete}
-          className="w-full h-10 bg-primary text-primary-foreground hover:bg-primary/90 font-primary text-sm font-[700]"
+          disabled={isLoading}
+          className={cn(
+            "w-full h-10 font-primary text-sm font-[700] transition-all",
+            isLoading
+              ? "bg-primary/70 text-primary-foreground cursor-wait"
+              : "bg-primary text-primary-foreground hover:bg-primary/90"
+          )}
         >
-          {t("dashboard.deleteStatusButton")}
+          {isLoading ? (
+            <div className="flex items-center justify-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>{t("dashboard.deleting")}</span>
+            </div>
+          ) : (
+            t("dashboard.deleteStatusButton")
+          )}
         </Button>
       </div>
     </Modal>

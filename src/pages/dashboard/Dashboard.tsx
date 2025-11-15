@@ -1,13 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
-import { v4 as uuidv4 } from 'uuid'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { isAuth, getCurrentUser } from '@/utils/auth'
-import { storage, STORAGE_KEYS } from '@/utils/storage'
-import type { Task, Status, User } from '@/types'
+import type { Task, Status } from '@/types'
+import { createTask, createStatus, toggleTaskFavorite, changeTaskStatus, updateTask, deleteTask, deleteStatus } from '@/utils/dashboard'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import DashboardHeader from './components/DashboardHeader'
@@ -35,20 +34,24 @@ function Dashboard() {
   const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false)
   const [isCreateStatusModalOpen, setIsCreateStatusModalOpen] = useState(false)
   const [isCreatingTask, setIsCreatingTask] = useState(false)
+  const [isDeletingTask, setIsDeletingTask] = useState(false)
   const [isCreatingStatus, setIsCreatingStatus] = useState(false)
+  const [isDeletingStatus, setIsDeletingStatus] = useState(false)
+  const [editingTask, setEditingTask] = useState<Task | null>(null)
   const [tasks, setTasks] = useState<Task[]>([])
   const [status, setStatus] = useState<Status[]>([])
   const [isLoadingPage, setIsLoadingPage] = useState(false)
   const [isSearching, setIsSearching] = useState(false)
   const [isInitialLoading, setIsInitialLoading] = useState(true)
+  const [changingStatusTaskId, setChangingStatusTaskId] = useState<string | null>(null)
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('')
   
   
   // Responsive items per page: 4 for mobile (< 391px), 7 for desktop (>= 391px)
-  const isMobile = windowWidth < 391
-  const itemsPerPage = isMobile ? 4 : 7
+  const isMobile = useMemo(() => windowWidth < 391, [windowWidth])
+  const itemsPerPage = useMemo(() => isMobile ? 4 : 7, [isMobile])
 
   useEffect(() => {
     // Redirect to signin if not authenticated
@@ -105,9 +108,11 @@ function Dashboard() {
   }
 
   // Filter tasks by search query (title) - use debounced query for actual filtering
-  const filteredTasks = tasks.filter((task) =>
-    task.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase().trim())
-  )
+  const filteredTasks = useMemo(() => {
+    return tasks.filter((task) =>
+      task.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase().trim())
+    )
+  }, [tasks, debouncedSearchQuery])
 
   // Reset to page 1 if current page is invalid after tasks change or itemsPerPage change
   useEffect(() => {
@@ -129,8 +134,8 @@ function Dashboard() {
     }
   }
 
-  const totalItems = filteredTasks.length
-  const totalPages = Math.ceil(totalItems / itemsPerPage)
+  const totalItems = useMemo(() => filteredTasks.length, [filteredTasks])
+  const totalPages = useMemo(() => Math.ceil(totalItems / itemsPerPage), [totalItems, itemsPerPage])
 
   const handleNext = async () => {
     if (currentPage < totalPages) {
@@ -143,9 +148,11 @@ function Dashboard() {
   }
 
   // Calculate paginated tasks from filtered tasks
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-  const paginatedTasks = filteredTasks.slice(startIndex, endIndex)
+  const paginatedTasks = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+    return filteredTasks.slice(startIndex, endIndex)
+  }, [filteredTasks, currentPage, itemsPerPage])
 
   // Reset to page 1 when debounced search query changes
   useEffect(() => {
@@ -156,46 +163,54 @@ function Dashboard() {
     setIsCreatingTask(true)
 
     try {
-      // Mock loading delay
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Get current user
-      const currentUser = getCurrentUser()
-      if (!currentUser) return
-
-      // Create new task object
-      const newTask: Task = {
-        id: uuidv4(),
-        title: taskData.title.trim(),
-        description: taskData.description?.trim() || undefined,
-        status: taskData.status,
-        userId: currentUser.id,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        isFavorite: false,
+      const updatedTasks = await createTask(taskData)
+      if (updatedTasks) {
+        setTasks(updatedTasks)
       }
-
-      // Update current user's tasks array
-      const updatedTasks = [...(currentUser.tasks || []), newTask]
-      const updatedUser = {
-        ...currentUser,
-        tasks: updatedTasks,
-      }
-
-      // Update localStorage - CURRENT_USER
-      storage.set(STORAGE_KEYS.CURRENT_USER, updatedUser)
-
-      // Update localStorage - USERS array
-      const users = storage.get<User[]>(STORAGE_KEYS.USERS) || []
-      const updatedUsers = users.map((user) =>
-        user.id === currentUser.id ? updatedUser : user
-      )
-      storage.set(STORAGE_KEYS.USERS, updatedUsers)
-
-      // Update local state
-      setTasks(updatedTasks)
     } finally {
       setIsCreatingTask(false)
+    }
+  }
+
+  const handleUpdateTask = async (taskId: string, taskData: { title: string; description: string; status: string }) => {
+    setIsCreatingTask(true)
+
+    try {
+      const updatedTasks = await updateTask(taskId, taskData, tasks)
+      if (updatedTasks) {
+        setTasks(updatedTasks)
+        setEditingTask(null)
+      }
+    } finally {
+      setIsCreatingTask(false)
+    }
+  }
+
+  const handleEditTask = (taskId: string) => {
+    const task = tasks.find((t) => t.id === taskId)
+    if (task) {
+      setEditingTask(task)
+      setIsCreateTaskModalOpen(true)
+    }
+  }
+
+  const handleCloseTaskModal = () => {
+    setIsCreateTaskModalOpen(false)
+    setEditingTask(null)
+  }
+
+  const handleDeleteTask = async (taskId: string) => {
+    setIsDeletingTask(true)
+
+    try {
+      const updatedTasks = await deleteTask(taskId, tasks)
+      if (updatedTasks) {
+        setTasks(updatedTasks)
+        setEditingTask(null)
+        setIsCreateTaskModalOpen(false)
+      }
+    } finally {
+      setIsDeletingTask(false)
     }
   }
 
@@ -203,80 +218,55 @@ function Dashboard() {
     setIsCreatingStatus(true)
 
     try {
-      // Mock loading delay
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Get current user
-      const currentUser = getCurrentUser()
-      if (!currentUser) return
-
-      // Create new status object
-      const newStatus: Status = {
-        id: uuidv4(),
-        name: statusData.title.trim(),
-        color: statusData.color,
-        userId: currentUser.id,
+      const updatedStatuses = await createStatus(statusData)
+      if (updatedStatuses) {
+        setStatus(updatedStatuses)
       }
-
-      // Update current user's status array
-      const updatedStatuses = [...(currentUser.status || []), newStatus]
-      const updatedUser = {
-        ...currentUser,
-        status: updatedStatuses,
-      }
-
-      // Update localStorage - CURRENT_USER
-      storage.set(STORAGE_KEYS.CURRENT_USER, updatedUser)
-
-      // Update localStorage - USERS array
-      const users = storage.get<User[]>(STORAGE_KEYS.USERS) || []
-      const updatedUsers = users.map((user) =>
-        user.id === currentUser.id ? updatedUser : user
-      )
-      storage.set(STORAGE_KEYS.USERS, updatedUsers)
-
-      // Update local state
-      setStatus(updatedStatuses)
     } finally {
       setIsCreatingStatus(false)
     }
   }
 
   const handleToggleFavorite = (taskId: string) => {
-    // Get current user
-    const currentUser = getCurrentUser()
-    if (!currentUser) return
-
-    // Update task's favorite status
-    const updatedTasks = tasks.map((task) =>
-      task.id === taskId
-        ? { ...task, isFavorite: !task.isFavorite, updatedAt: new Date().toISOString() }
-        : task
-    )
-
-    const updatedUser = {
-      ...currentUser,
-      tasks: updatedTasks,
+    const updatedTasks = toggleTaskFavorite(taskId, tasks)
+    if (updatedTasks) {
+      setTasks(updatedTasks)
     }
+  }
 
-    // Update localStorage - CURRENT_USER
-    storage.set(STORAGE_KEYS.CURRENT_USER, updatedUser)
+  const handleStatusChange = async (taskId: string, newStatus: string) => {
+    // Set loading state
+    setChangingStatusTaskId(taskId)
 
-    // Update localStorage - USERS array
-    const users = storage.get<User[]>(STORAGE_KEYS.USERS) || []
-    const updatedUsers = users.map((user) =>
-      user.id === currentUser.id ? updatedUser : user
-    )
-    storage.set(STORAGE_KEYS.USERS, updatedUsers)
+    try {
+      const updatedTasks = await changeTaskStatus(taskId, newStatus, tasks)
+      if (updatedTasks) {
+        setTasks(updatedTasks)
+      }
+    } finally {
+      // Clear loading state
+      setChangingStatusTaskId(null)
+    }
+  }
 
-    // Update local state
-    setTasks(updatedTasks)
+  const handleDeleteStatus = async (statusId: string, statusName: string) => {
+    setIsDeletingStatus(true)
+
+    try {
+      const result = await deleteStatus(statusId, statusName, status, tasks)
+      if (result) {
+        setStatus(result.updatedStatuses)
+        setTasks(result.updatedTasks)
+      }
+    } finally {
+      setIsDeletingStatus(false)
+    }
   }
 
   // Check if status array is empty
-  const isStatusEmpty = !status || status.length === 0
+  const isStatusEmpty = useMemo(() => !status || status.length === 0, [status])
   // Check if tasks array is empty (but status exists) - don't consider empty during initial loading
-  const isTasksEmpty = !isInitialLoading && (!tasks || tasks.length === 0)
+  const isTasksEmpty = useMemo(() => !isInitialLoading && (!tasks || tasks.length === 0), [isInitialLoading, tasks])
 
   if(isInitialLoading && !fromSignup) {
     return (
@@ -360,9 +350,12 @@ function Dashboard() {
                     <TaskTable 
                       tasks={paginatedTasks} 
                       onToggleFavorite={handleToggleFavorite}
+                      onStatusChange={handleStatusChange}
+                      onEdit={handleEditTask}
+                      onDeleteStatus={handleDeleteStatus}
                       isLoading={isLoadingPage || isSearching}
-                      isInitialLoading={false}
-                      itemsPerPage={itemsPerPage}
+                      changingStatusTaskId={changingStatusTaskId}
+                      isDeletingStatus={isDeletingStatus}
                     />
                   </div>
 
@@ -389,12 +382,17 @@ function Dashboard() {
         </DashboardContent>
       </div>
 
-      {/* Create Task Modal */}
+      {/* Create/Edit Task Modal */}
       <CreateTaskModal
         isOpen={isCreateTaskModalOpen}
-        onClose={() => setIsCreateTaskModalOpen(false)}
+        onClose={handleCloseTaskModal}
         onCreateTask={handleCreateTask}
+        onUpdateTask={handleUpdateTask}
+        onDeleteTask={handleDeleteTask}
         isLoading={isCreatingTask}
+        isDeleting={isDeletingTask}
+        isEdit={!!editingTask}
+        task={editingTask}
       />
 
       {/* Create Status Modal */}

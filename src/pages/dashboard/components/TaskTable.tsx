@@ -5,17 +5,19 @@ import { useTranslation } from 'react-i18next'
 import { getCurrentUser } from '@/utils/auth'
 import type { Task, Status } from '@/types'
 import TaskActionsPopover from './popovers/TaskActionsPopover'
-import TaskTableSkeleton from './TaskTableSkeleton'
 
 interface TaskTableProps {
   tasks: Task[]
   onToggleFavorite?: (taskId: string) => void
+  onStatusChange?: (taskId: string, newStatus: string) => void
+  onEdit?: (taskId: string) => void
+  onDeleteStatus?: (statusId: string, statusName: string) => void
   isLoading?: boolean
-  isInitialLoading?: boolean
-  itemsPerPage?: number
+  changingStatusTaskId?: string | null
+  isDeletingStatus?: boolean
 }
 
-function TaskTable({ tasks, onToggleFavorite, isLoading = false, isInitialLoading = false, itemsPerPage = 7 }: TaskTableProps) {
+function TaskTable({ tasks, onToggleFavorite, onStatusChange, onEdit, onDeleteStatus, isLoading = false, changingStatusTaskId = null, isDeletingStatus = false }: TaskTableProps) {
   const { t } = useTranslation()
   const [openPopoverId, setOpenPopoverId] = useState<string | null>(null)
   const [statuses, setStatuses] = useState<Status[]>([])
@@ -35,19 +37,16 @@ function TaskTable({ tasks, onToggleFavorite, isLoading = false, isInitialLoadin
     setOpenPopoverId(openPopoverId === taskId ? null : taskId)
   }
 
-  const handleStatusChange = (taskId: string, newStatus: string) => {
-    // TODO: Implement status change logic
-    console.log(`Change task ${taskId} status to ${newStatus}`)
+  const handleStatusChange = async (taskId: string, newStatus: string) => {
+    await onStatusChange?.(taskId, newStatus)
+    // Close popover after status change completes
+    if (openPopoverId === taskId) {
+      setOpenPopoverId(null)
+    }
   }
 
   const handleEdit = (taskId: string) => {
-    // TODO: Implement edit logic
-    console.log(`Edit task ${taskId}`)
-  }
-
-  const handleDelete = (taskId: string) => {
-    // TODO: Implement delete logic
-    console.log(`Delete task ${taskId}`)
+    onEdit?.(taskId)
   }
 
   // Helper function to get status color by name
@@ -163,8 +162,10 @@ function TaskTable({ tasks, onToggleFavorite, isLoading = false, isInitialLoadin
                 triggerRef={{ current: buttonRefs.current[task.id] }}
                 onStatusChange={(newStatus) => handleStatusChange(task.id, newStatus)}
                 onEdit={() => handleEdit(task.id)}
-                onDelete={() => handleDelete(task.id)}
+                onDeleteStatus={onDeleteStatus}
                 taskStatus={task.status}
+                isLoading={changingStatusTaskId === task.id}
+                isDeletingStatus={isDeletingStatus}
               />
             </div>
           </div>

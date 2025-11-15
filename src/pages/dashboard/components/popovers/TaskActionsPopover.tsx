@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Zap } from 'lucide-react'
+import { Zap, Loader2 } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useTranslation } from 'react-i18next'
@@ -15,8 +15,10 @@ interface TaskActionsPopoverProps {
   triggerRef: React.RefObject<HTMLElement | null>
   onStatusChange?: (status: string) => void
   onEdit?: () => void
-  onDelete?: () => void
+  onDeleteStatus?: (statusId: string, statusName: string) => void | Promise<void>
   taskStatus?: string
+  isLoading?: boolean
+  isDeletingStatus?: boolean
 }
 
 function TaskActionsPopover({
@@ -25,8 +27,10 @@ function TaskActionsPopover({
   triggerRef,
   onStatusChange,
   onEdit,
-  onDelete,
+  onDeleteStatus,
   taskStatus,
+  isLoading = false,
+  isDeletingStatus = false,
 }: TaskActionsPopoverProps) {
   const { theme } = useTheme()
   const { language } = useLanguage()
@@ -38,15 +42,20 @@ function TaskActionsPopover({
     // Load statuses from current user
     const currentUser = getCurrentUser()
     if (currentUser && currentUser.status && currentUser.status.length > 0) {
-      setStatuses(currentUser.status)
+      // Filter out the current task status
+      const filteredStatuses = currentUser.status.filter(
+        (status) => status.name !== taskStatus
+      )
+      setStatuses(filteredStatuses)
     } else {
       setStatuses([])
     }
-  }, [isOpen]) // Reload when popover opens
+  }, [isOpen, taskStatus]) // Reload when popover opens or task status changes
 
-  const handleStatusClick = (status: string) => {
-    onStatusChange?.(status)
-    onClose()
+  const handleStatusClick = async (status: string) => {
+    if (isLoading) return // Prevent multiple clicks during loading
+    await onStatusChange?.(status)
+    // Popover will be closed by parent component after status change completes
   }
 
   const handleEdit = () => {
@@ -55,16 +64,28 @@ function TaskActionsPopover({
   }
 
   const handleDelete = () => {
+    if (isLoading || isDeletingStatus) return
     setIsDeleteStatusModalOpen(true)
     onClose()
   }
 
-  const handleDeleteStatus = () => {
-    onDelete?.()
-    setIsDeleteStatusModalOpen(false)
+  const handleDeleteStatusConfirm = async () => {
+    if (!taskStatus || isDeletingStatus) return
+    
+    // Find the status by name to get its ID
+    const currentUser = getCurrentUser()
+    if (currentUser && currentUser.status) {
+      const statusToDelete = currentUser.status.find((s) => s.name === taskStatus)
+      if (statusToDelete) {
+        await onDeleteStatus?.(statusToDelete.id, statusToDelete.name)
+        // Close modal after deletion completes
+        setIsDeleteStatusModalOpen(false)
+      }
+    }
   }
 
   const handleCloseDeleteModal = () => {
+    if (isDeletingStatus) return // Prevent closing during deletion
     setIsDeleteStatusModalOpen(false)
   }
 
@@ -104,12 +125,17 @@ function TaskActionsPopover({
                     {t('dashboard.noStatusAvailable') || 'No status available'}
                   </span>
                 </div>
+              ) : isLoading ? (
+                <div className="flex items-center justify-center py-2">
+                  <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                </div>
               ) : (
                 statuses.map((status) => (
                   <button
                     key={status.id}
                     onClick={() => handleStatusClick(status.name)}
-                    className="flex items-center hover:bg-muted transition-colors opacity-100"
+                    disabled={isLoading}
+                    className="flex items-center hover:bg-muted transition-colors opacity-100 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <div
                       className="rounded-sm opacity-100 w-4 h-4 mx-2"
@@ -171,7 +197,11 @@ function TaskActionsPopover({
         <div className="opacity-100 overflow-hidden w-full max-w-[210px] h-7 pr-1.5 pl-1.5">
           <button
             onClick={handleDelete}
-            className="flex items-center hover:bg-muted transition-colors opacity-100 w-full h-full pr-1.5 pl-1.5"
+            disabled={isLoading || isDeletingStatus}
+            className={cn(
+              "flex items-center hover:bg-muted transition-colors opacity-100 w-full h-full pr-1.5 pl-1.5",
+              (isLoading || isDeletingStatus) && "opacity-50 cursor-wait"
+            )}
           >
             <svg
               width="16"
@@ -203,8 +233,9 @@ function TaskActionsPopover({
     <DeleteStatusModal
       isOpen={isDeleteStatusModalOpen}
       onClose={handleCloseDeleteModal}
-      onDelete={handleDeleteStatus}
+      onDelete={handleDeleteStatusConfirm}
       statusName={taskStatus}
+      isLoading={isDeletingStatus}
     />
     </>
   )
