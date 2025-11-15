@@ -73,7 +73,7 @@ function Dashboard() {
   }
 
   // Check if status array is empty
-  const isStatusEmpty = false
+  const isStatusEmpty = !status || status.length === 0
   // Check if tasks array is empty (but status exists)
   const isTasksEmpty = !tasks || tasks.length === 0
 
@@ -90,7 +90,7 @@ function Dashboard() {
       {/* Bottom Container */}
       <div className="w-full mt-4 md:mt-10">
         <DashboardContent centerContent={isStatusEmpty}>
-          {false ? (
+          {isStatusEmpty ? (
             <EmptyState 
               isStatus={true} 
               onCreateClick={() => setIsCreateStatusModalOpen(true)} 
