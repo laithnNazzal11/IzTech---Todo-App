@@ -1,6 +1,6 @@
 const STORAGE_KEYS = {
   USERS: 'users',
-  CURRENT_USER: 'todo_app_current_user',
+  CURRENT_USER: 'current_user',
   TASKS: 'todo_app_tasks',
   THEME: 'todo_app_theme',
   LANGUAGE: 'todo_app_language',

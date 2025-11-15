@@ -2,11 +2,19 @@ import { storage, STORAGE_KEYS } from './storage'
 import type { User } from '@/types'
 
 /**
+ * Gets the current user from localStorage
+ * @returns User object if found, null otherwise
+ */
+export function getCurrentUser(): User | null {
+  return storage.get<User>(STORAGE_KEYS.CURRENT_USER)
+}
+
+/**
  * Checks if user is authenticated
  * @returns true if CURRENT_USER exists in localStorage, false otherwise
  */
 export function isAuth(): boolean {
-  const currentUser = storage.get<User>(STORAGE_KEYS.CURRENT_USER)
+  const currentUser = getCurrentUser()
   return currentUser !== null && currentUser !== undefined
 }
 

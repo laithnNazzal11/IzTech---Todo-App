@@ -2,15 +2,8 @@ import { useState, useRef } from 'react'
 import { Star, MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from 'react-i18next'
+import type { Task } from '@/types'
 import TaskActionsPopover from './popovers/TaskActionsPopover'
-
-interface Task {
-  id: string
-  title: string
-  description: string
-  status: string
-  isFavorite: boolean
-}
 
 interface TaskTableProps {
   tasks: Task[]
@@ -70,7 +63,7 @@ function TaskTable({ tasks }: TaskTableProps) {
               <span className="truncate">{task.title}</span>
             </div>
             <div className="font-primary text-sm text-muted-foreground hidden sm:flex sm:items-center min-w-0 overflow-hidden">
-              <span className="truncate">{task.description}</span>
+              <span className="truncate">{task.description || ''}</span>
             </div>
             <div className="flex items-center justify-center gap-[10px]">
               {/* Mobile: Small colored box */}

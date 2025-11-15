@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { FileX } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useTranslation } from 'react-i18next'
+import { getCurrentUser } from '@/utils/auth'
 import Popover from './Popover'
 import CreateStatusModal from '../modals/CreateStatusModal'
 
-interface Status {
+interface StatusWithCount {
   id: string
   name: string
   color: string
@@ -17,17 +19,49 @@ interface StatusPopoverProps {
   triggerRef: React.RefObject<HTMLElement | null>
 }
 
-// Mock status data - replace with actual data fetching
-const statuses: Status[] = [
-  { id: '1', name: 'Do It', color: '#6A66E0', count: 3 },
-  { id: '2', name: 'Done', color: '#E01F3C', count: 2 },
-  { id: '3', name: 'In Progress', color: '#804FE0', count: 4 },
-]
-
 function StatusPopover({ isOpen, onClose, triggerRef }: StatusPopoverProps) {
   const { theme } = useTheme()
   const { t } = useTranslation()
   const [isCreateStatusModalOpen, setIsCreateStatusModalOpen] = useState(false)
+  const [statusesWithCount, setStatusesWithCount] = useState<StatusWithCount[]>([])
+
+  useEffect(() => {
+    // Load current user from localStorage
+    const currentUser = getCurrentUser()
+    
+    if (!currentUser) {
+      setStatusesWithCount([])
+      return
+    }
+
+    const tasks = currentUser.tasks || []
+    const statuses = currentUser.status || []
+
+    // If there are no tasks, return empty array
+    if (tasks.length === 0) {
+      setStatusesWithCount([])
+      return
+    }
+
+    // Group tasks by status and count them
+    const taskCountByStatus: Record<string, number> = {}
+    tasks.forEach((task) => {
+      const statusName = task.status
+      taskCountByStatus[statusName] = (taskCountByStatus[statusName] || 0) + 1
+    })
+
+    // Map statuses with their counts
+    const statusesWithCounts: StatusWithCount[] = statuses
+      .map((status) => ({
+        id: status.id,
+        name: status.name,
+        color: status.color,
+        count: taskCountByStatus[status.name] || 0,
+      }))
+      .filter((status) => status.count > 0) // Only show statuses that have tasks
+
+    setStatusesWithCount(statusesWithCounts)
+  }, [isOpen]) // Recalculate when popover opens
 
   const handleCreateNewStatus = () => {
     onClose()
@@ -38,7 +72,7 @@ function StatusPopover({ isOpen, onClose, triggerRef }: StatusPopoverProps) {
     setIsCreateStatusModalOpen(false)
   }
 
-  const handleCreateStatus = (status: { title: string; color: string }) => {
+  const handleCreateStatus = (_status: { title: string; color: string }) => {
     // TODO: Implement actual status creation logic
     setIsCreateStatusModalOpen(false)
   }
@@ -54,29 +88,38 @@ function StatusPopover({ isOpen, onClose, triggerRef }: StatusPopoverProps) {
     >
       <div className="flex flex-col h-full">
         {/* Top Box - Status List */}
-        <div className="opacity-100 w-[210px] h-[84px] pr-2 pl-2">
+        <div className="opacity-100 w-[210px] min-h-[84px] pr-2 pl-2">
           <div className="flex flex-col h-full gap-2 py-1">
-            {statuses.map((status) => (
-              <div
-                key={status.id}
-                className="flex items-center justify-between opacity-100 pr-1 pl-1"
-              >
-                <div className="flex items-center gap-2">
-                  <div
-                    className="rounded-sm opacity-100 w-4 h-4"
-                    style={{
-                      backgroundColor: status.color,
-                    }}
-                  />
-                  <span className={`font-primary text-sm ${theme === 'dark' ? 'text-white' : 'text-foreground'}`}>
-                    {status.name}
-                  </span>
-                </div>
+            {statusesWithCount.length === 0 ? (
+              <div className="flex items-center justify-center gap-2 py-2">
+                <FileX className={`h-4 w-4 ${theme === 'dark' ? 'text-white' : 'text-foreground'}`} />
                 <span className={`font-primary text-sm ${theme === 'dark' ? 'text-white' : 'text-foreground'}`}>
-                  {status.count}
+                  there is no taks yet
                 </span>
               </div>
-            ))}
+            ) : (
+              statusesWithCount.map((status) => (
+                <div
+                  key={status.id}
+                  className="flex items-center justify-between opacity-100 pr-1 pl-1"
+                >
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="rounded-sm opacity-100 w-4 h-4"
+                      style={{
+                        backgroundColor: status.color,
+                      }}
+                    />
+                    <span className={`font-primary text-sm ${theme === 'dark' ? 'text-white' : 'text-foreground'}`}>
+                      {status.name}
+                    </span>
+                  </div>
+                  <span className={`font-primary text-sm ${theme === 'dark' ? 'text-white' : 'text-foreground'}`}>
+                    {status.count}
+                  </span>
+                </div>
+              ))
+            )}
           </div>
         </div>
 

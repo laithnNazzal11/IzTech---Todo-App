@@ -62,7 +62,11 @@
     "statusInProgress": "قيد التنفيذ",
     "statusDone": "تم",
     "statusDoIt": "افعلها",
-    "statusWord": "حالة"
+    "statusWord": "حالة",
+    "emptyStatusTitle": "أوه لا... إنه فارغ هنا!",
+    "emptyStatusDescription": "يبدو أن جميع حالاتك قد اختفت في الهاوية!\nأنشئ واحدة جديدة قبل أن تستولي الأشباح...",
+    "emptyTasksTitle": "لا توجد مهام... فقط صمت مخيف!",
+    "emptyTasksDescription": "إنه فارغ جداً هنا... فارغ تقريباً. هل اختفت مهامك في الفراغ؟\nاستدعِ مهمة جديدة قبل أن تبدأ الأشباح بالهمس..."
   }
 }
 

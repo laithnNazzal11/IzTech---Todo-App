@@ -62,7 +62,11 @@
     "statusInProgress": "In Progress",
     "statusDone": "Done",
     "statusDoIt": "Do It",
-    "statusWord": "Status"
+    "statusWord": "Status",
+    "emptyStatusTitle": "Uh-oh... It's Empty in Here!",
+    "emptyStatusDescription": "Looks like all your statuses have vanished into the abyss!\nCreate a new one before the ghosts take over...",
+    "emptyTasksTitle": "No Tasks... Just an Eerie Silence!",
+    "emptyTasksDescription": "It's so empty here... almost too empty. Did your tasks vanish into the void?\nSummon a new task before the ghosts start whispering..."
   }
 }
 

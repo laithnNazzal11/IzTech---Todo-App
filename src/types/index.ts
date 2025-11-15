@@ -22,6 +22,7 @@ export interface Task {
   userId: string
   createdAt: string
   updatedAt: string
+  isFavorite?: boolean
 }
 
 export type Theme = 'light' | 'dark'

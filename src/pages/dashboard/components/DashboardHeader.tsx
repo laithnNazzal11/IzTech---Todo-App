@@ -3,8 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/brand/Logo'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
-import { storage, STORAGE_KEYS } from '@/utils/storage'
-import type { User } from '@/types'
+import { getCurrentUser } from '@/utils/auth'
 import { useEffect, useState, useRef } from 'react'
 import AvatarPopover from './popovers/AvatarPopover'
 
@@ -21,7 +20,7 @@ function DashboardHeader({ onToggleLanguage, onToggleTheme }: DashboardHeaderPro
   const avatarButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
-    const currentUser = storage.get<User>(STORAGE_KEYS.CURRENT_USER)
+    const currentUser = getCurrentUser()
     if (currentUser?.avatar) {
       setUserAvatar(currentUser.avatar)
     }
