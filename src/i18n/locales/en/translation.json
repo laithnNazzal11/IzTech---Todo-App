@@ -24,6 +24,18 @@
     "signInLink": "Sign in",
     "promoTitle": "The Haunted ToDo List",
     "promoSubtitle": "Tasks That Won't Stay Buried!"
+  },
+  "dashboard": {
+    "myTasks": "My Tasks",
+    "createNewTask": "Create New Task",
+    "previous": "Previous",
+    "next": "Next",
+    "status": "Status",
+    "title": "Title",
+    "description": "Description",
+    "inProgress": "In Progress",
+    "of": "of",
+    "search": "Search..."
   }
 }
 

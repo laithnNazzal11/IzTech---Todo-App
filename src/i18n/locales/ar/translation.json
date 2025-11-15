@@ -24,6 +24,18 @@
     "signInLink": "تسجيل الدخول",
     "promoTitle": "قائمة المهام المسكونة",
     "promoSubtitle": "مهام لن تبقى مدفونة!"
+  },
+  "dashboard": {
+    "myTasks": "مهامي",
+    "createNewTask": "إنشاء مهمة جديدة",
+    "previous": "السابق",
+    "next": "التالي",
+    "status": "الحالة",
+    "title": "العنوان",
+    "description": "الوصف",
+    "inProgress": "قيد التنفيذ",
+    "of": "من",
+    "search": "بحث..."
   }
 }
 

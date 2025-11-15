@@ -1,5 +1,6 @@
 import { Star, MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useTranslation } from 'react-i18next'
 
 interface Task {
   id: string
@@ -14,14 +15,16 @@ interface TaskTableProps {
 }
 
 function TaskTable({ tasks }: TaskTableProps) {
+  const { t } = useTranslation()
+  
   return (
     <div className="flex flex-col w-full">
       {/* Table Header */}
       <div className="grid grid-cols-[24px_2fr_3fr_.5fr_10px] gap-4 pb-2">
         <div className="font-primary text-sm font-[700] text-foreground"></div>
-        <div className="font-primary text-sm font-[700] text-foreground">Title</div>
-        <div className="font-primary text-sm font-[700] text-foreground">Description</div>
-        <div className="font-primary text-sm font-[700] text-foreground flex items-center justify-center w-full">Status</div>
+        <div className="font-primary text-sm font-[700] text-foreground">{t('dashboard.title')}</div>
+        <div className="font-primary text-sm font-[700] text-foreground">{t('dashboard.description')}</div>
+        <div className="font-primary text-sm font-[700] text-foreground flex items-center justify-center w-full">{t('dashboard.status')}</div>
         <div className="font-primary text-sm font-[700] text-foreground flex"></div>
 
       </div>

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { Button } from '@/components/ui/button'
@@ -28,6 +29,7 @@ const mockTasks = [
 ]
 
 function Dashboard() {
+  const { t } = useTranslation()
   const { toggleTheme } = useTheme()
   const { language, changeLanguage } = useLanguage()
   const [currentPage, setCurrentPage] = useState(1)
@@ -70,12 +72,12 @@ function Dashboard() {
         <div className="flex flex-col gap-[24px]">
           <div className="flex items-center justify-between">
             <h1 className="font-primary text-[24px] font-[700] leading-[32px] tracking-[0] text-foreground">
-              My Tasks
+              {t('dashboard.myTasks')}
             </h1>
             <Button
               className="w-[142px] h-[36px] gap-2 bg-primary text-primary-foreground hover:bg-primary/90 opacity-100"
             >
-              Create New Task
+              {t('dashboard.createNewTask')}
             </Button>
           </div>
 
