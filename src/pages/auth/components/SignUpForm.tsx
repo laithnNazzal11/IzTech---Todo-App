@@ -12,6 +12,7 @@ function SignUpForm() {
   const { signUp, isLoading, error, clearError } = useAuth();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -20,7 +21,28 @@ function SignUpForm() {
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    setAvatarError(null);
+    clearError();
+    
     if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setAvatarError('File must be an image');
+        setAvatarFile(null);
+        setAvatarPreview(null);
+        return;
+      }
+
+      // Validate file size (2MB limit)
+      const maxSizeBytes = 2 * 1024 * 1024; // 2MB
+      if (file.size > maxSizeBytes) {
+        const fileSizeMB = (file.size / 1024 / 1024).toFixed(2);
+        setAvatarError(`Image size must be less than 2MB. Current size: ${fileSizeMB}MB`);
+        setAvatarFile(null);
+        setAvatarPreview(null);
+        return;
+      }
+
       setAvatarFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -123,7 +145,16 @@ function SignUpForm() {
           </div>
         </div>
 
-        {/* Error Message */}
+        {/* Avatar Error Message */}
+        {avatarError && (
+          <div className="flex flex-col gap-2 p-3 rounded-md bg-destructive/10 border border-destructive/20">
+            <p className="font-primary text-sm font-[400] text-destructive">
+              {avatarError}
+            </p>
+          </div>
+        )}
+
+        {/* General Error Message */}
         {error && (
           <div className="flex flex-col gap-2 p-3 rounded-md bg-destructive/10 border border-destructive/20">
             <p className="font-primary text-sm font-[400] text-destructive">

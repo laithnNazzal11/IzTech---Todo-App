@@ -3,6 +3,7 @@ import { FileX } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useTranslation } from 'react-i18next'
 import { getCurrentUser } from '@/utils/auth'
+import { cn } from '@/lib/utils'
 import Popover from './Popover'
 import CreateStatusModal from '../modals/CreateStatusModal'
 
@@ -81,6 +82,17 @@ function StatusPopover({ isOpen, onClose, triggerRef, onCreateStatus }: StatusPo
     setIsCreateStatusModalOpen(false)
   }
 
+  // Calculate height based on number of statuses
+  // Base height: divider (8px) + Create New Status button (28px) + padding (8px) = 44px
+  // Each status item: ~28px
+  const baseHeight = 44
+  const statusItemHeight = 28
+  const maxStatusHeight = statusItemHeight * 4 // Max 4 statuses visible
+  const statusSectionHeight = statusesWithCount.length > 0
+    ? Math.min(statusItemHeight * statusesWithCount.length, maxStatusHeight)
+    : 28 // Empty state height
+  const totalHeight = baseHeight + statusSectionHeight
+
   return (
     <>
     <Popover
@@ -88,12 +100,15 @@ function StatusPopover({ isOpen, onClose, triggerRef, onCreateStatus }: StatusPo
       onClose={onClose}
       triggerRef={triggerRef}
       width={210}
-      height={128}
+      height={totalHeight}
     >
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col overflow-hidden">
         {/* Top Box - Status List */}
-        <div className="opacity-100 w-[210px] min-h-[84px] pr-2 pl-2">
-          <div className="flex flex-col h-full gap-2 py-1">
+        <div className="opacity-100 w-[210px] pr-2 pl-2">
+          <div className={cn(
+            "flex flex-col gap-2 py-1",
+            statusesWithCount.length > 4 && "max-h-[112px] overflow-y-auto"
+          )}>
             {statusesWithCount.length === 0 ? (
               <div className="flex items-center justify-center gap-2 py-2">
                 <FileX className={`h-4 w-4 ${theme === 'dark' ? 'text-white' : 'text-foreground'}`} />

@@ -100,12 +100,35 @@ export function isEmailExists(email: string): boolean {
 
 /*
  * Converts image file to base64 string for localStorage storage
+ * @param file - Image file to convert
+ * @param maxSizeMB - Maximum file size in MB (default: 2MB)
  */
-export function imageToBase64(file: File): Promise<string> {
+export function imageToBase64(file: File, maxSizeMB: number = 2): Promise<string> {
   return new Promise((resolve, reject) => {
+    // Check file size (convert MB to bytes)
+    const maxSizeBytes = maxSizeMB * 1024 * 1024
+    if (file.size > maxSizeBytes) {
+      reject(new Error(`Image size must be less than ${maxSizeMB}MB. Current size: ${(file.size / 1024 / 1024).toFixed(2)}MB`))
+      return
+    }
+
+    // Check if file is an image
+    if (!file.type.startsWith('image/')) {
+      reject(new Error('File must be an image'))
+      return
+    }
+
     const reader = new FileReader()
     reader.onloadend = () => {
       if (typeof reader.result === 'string') {
+        // Check base64 size (localStorage limit is typically 5-10MB per key)
+        // Base64 is ~33% larger than original file
+        const base64Size = reader.result.length
+        const maxBase64Size = 5 * 1024 * 1024 // 5MB limit for base64 string
+        if (base64Size > maxBase64Size) {
+          reject(new Error('Image is too large after conversion. Please use a smaller image.'))
+          return
+        }
         resolve(reader.result)
       } else {
         reject(new Error('Failed to convert image to base64'))
@@ -140,12 +163,13 @@ export function createUser(data: SignUpData): User {
   const users = storage.get<User[]>(STORAGE_KEYS.USERS) || []
 
   // Create new user object
+  // If no avatar provided, use default avatar path
   const newUser: User = {
     id: uuidv4(),
     name: data.name.trim(),
     email: data.email.toLowerCase().trim(),
     password: data.password, // In production, this should be hashed
-    avatar: data.avatar || undefined,
+    avatar: data.avatar || '/images/Avatar.png', // Fallback to default avatar
     tasks: [],
     status: [],
   }
@@ -157,6 +181,7 @@ export function createUser(data: SignUpData): User {
   storage.set(STORAGE_KEYS.USERS, users)
 
   // Set as current user (authenticate user)
+  console.log("newUser",newUser)
   storage.set(STORAGE_KEYS.CURRENT_USER, newUser)
 
   return newUser

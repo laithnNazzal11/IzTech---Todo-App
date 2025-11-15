@@ -34,10 +34,9 @@ function EmptyState({ isStatus, onCreateClick }: EmptyStateProps) {
         "flex flex-col",
         "border border-dashed rounded-lg p-4 sm:p-6 gap-4 sm:gap-6",
         "border-[hsla(240,6%,90%,1)]",
-        "w-full h-full overflow-hidden",
         isStatus
-          ? "items-center justify-center max-w-full md:max-w-[1344px]"
-          : "items-center justify-center max-w-full md:max-w-[100%] h-[100%]"
+          ? "items-center justify-center w-full max-w-full md:max-w-[1344px] h-auto"
+          : "items-center justify-center w-full max-w-full md:max-w-[100%] h-full mb-8 overflow-hidden"
       )}
     >
       {/* Ghost Illustration */}

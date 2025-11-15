@@ -164,9 +164,9 @@ function Dashboard() {
   const isTasksEmpty = !tasks || tasks.length === 0
 
   return (
-    <section className="flex min-h-screen w-full flex-col bg-background text-foreground px-[8px] sm:px-4 md:px-0">
+    <section className="flex h-screen w-full flex-col bg-background text-foreground px-[8px] sm:px-4 md:px-0 overflow-hidden">
       {/* Top Container */}
-      <div className="w-full">
+      <div className="w-full flex-shrink-0">
         <DashboardHeader
           onToggleLanguage={handleLanguageToggle}
           onToggleTheme={toggleTheme}
@@ -174,7 +174,7 @@ function Dashboard() {
       </div>
 
       {/* Bottom Container */}
-      <div className="w-full mt-4 md:mt-10">
+      <div className="w-full flex-1 min-h-0 mt-4 md:mt-10">
         <DashboardContent centerContent={isStatusEmpty}>
           {isStatusEmpty ? (
             <EmptyState 
@@ -212,19 +212,21 @@ function Dashboard() {
               ) : (
                 <>
                   {/* Task Table */}
-                  <div className="flex-1 overflow-auto mt-[24px]">
+                  <div className="flex-1 overflow-auto mt-[24px] mb-4">
                     <TaskTable tasks={tasks} />
                   </div>
 
                   {/* Pagination */}
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    itemsPerPage={itemsPerPage}
-                    totalItems={totalItems}
-                    onPrevious={handlePrevious}
-                    onNext={handleNext}
-                  />
+                  <div className="flex-shrink-0 pb-4">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      itemsPerPage={itemsPerPage}
+                      totalItems={totalItems}
+                      onPrevious={handlePrevious}
+                      onNext={handleNext}
+                    />
+                  </div>
                 </>
               )}
             </div>

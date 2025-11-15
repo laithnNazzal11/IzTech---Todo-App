@@ -68,7 +68,7 @@ function TaskTable({ tasks }: TaskTableProps) {
   }
 
   return (
-    <div className="flex flex-col w-full bg-background min-h-[400px]" style={{ boxShadow: '0px 1px 2px 0px hsla(0, 0%, 0%, 0.05)' }}>
+    <div className="flex flex-col w-full bg-background min-h-[300px]" style={{ boxShadow: '0px 1px 2px 0px hsla(0, 0%, 0%, 0.05)' }}>
       {/* Table Header */}
       <div className="grid grid-cols-[24px_1fr_0.2fr_10px] sm:grid-cols-[24px_2fr_3fr_.5fr_10px] gap-y-4 gap-x-6 sm:gap-4 pb-2 border-b border-b-[hsla(180,33%,99%,1)]">
         <div className="font-primary text-sm font-[700] text-foreground"></div>

@@ -21,9 +21,8 @@ function DashboardHeader({ onToggleLanguage, onToggleTheme }: DashboardHeaderPro
 
   useEffect(() => {
     const currentUser = getCurrentUser()
-    if (currentUser?.avatar) {
-      setUserAvatar(currentUser.avatar)
-    }
+    // Use avatar if provided, otherwise use default avatar path
+    setUserAvatar(currentUser?.avatar || '/images/Avatar.png')
   }, [])
 
   const handleAvatarClick = () => {
@@ -84,19 +83,13 @@ function DashboardHeader({ onToggleLanguage, onToggleTheme }: DashboardHeaderPro
             onClick={handleAvatarClick}
           >
             <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-400 via-blue-400 to-pink-400 flex items-center justify-center overflow-hidden opacity-100">
-              {userAvatar ? (
-                <img
-                  src={userAvatar}
-                  alt="Avatar"
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <img
-                  src="/images/Avatar.png"
-                  alt="Avatar"
-                  className="h-full w-full object-contain"
-                />
-              )}
+              <img
+                src={userAvatar || '/images/Avatar.png'}
+                alt="Avatar"
+                className={userAvatar && userAvatar.startsWith('data:') 
+                  ? "h-full w-full object-cover" 
+                  : "h-full w-full object-contain"}
+              />
             </div>
           </Button>
 

@@ -27,6 +27,9 @@ export function useAuth(): UseAuthReturn {
     setError(null)
 
     try {
+      // Mock loading delay of 2 seconds
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+
       // Convert avatar file to base64 if provided
       let avatarBase64: string | undefined
       if (avatarFile) {
