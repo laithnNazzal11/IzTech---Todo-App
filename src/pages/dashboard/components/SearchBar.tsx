@@ -2,7 +2,12 @@ import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { useTranslation } from 'react-i18next'
 
-function SearchBar() {
+interface SearchBarProps {
+  value: string
+  onChange: (value: string) => void
+}
+
+function SearchBar({ value, onChange }: SearchBarProps) {
   const { t } = useTranslation()
   
   return (
@@ -12,6 +17,8 @@ function SearchBar() {
         type="text"
         placeholder={t('dashboard.search')}
         className="pl-10"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
       />
     </div>
   )

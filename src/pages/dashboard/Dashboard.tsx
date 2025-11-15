@@ -33,7 +33,10 @@ function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [status, setStatus] = useState<Status[]>([])
   const [isLoadingPage, setIsLoadingPage] = useState(false)
+  const [isSearching, setIsSearching] = useState(false)
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('')
   
   // Responsive items per page: 4 for mobile (< 391px), 7 for desktop (>= 391px)
   const itemsPerPage = windowWidth < 391 ? 4 : 7
@@ -63,19 +66,40 @@ function Dashboard() {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+  // Debounce search query with loading state
+  useEffect(() => {
+    if (searchQuery !== debouncedSearchQuery) {
+      setIsSearching(true)
+      const timer = setTimeout(() => {
+        setDebouncedSearchQuery(searchQuery)
+        setIsSearching(false)
+      }, 300) // 300ms delay for search
+
+      return () => {
+        clearTimeout(timer)
+        setIsSearching(false)
+      }
+    }
+  }, [searchQuery, debouncedSearchQuery])
+
+  const handleLanguageToggle = () => {
+    changeLanguage(language === 'en' ? 'ar' : 'en')
+  }
+
+  // Filter tasks by search query (title) - use debounced query for actual filtering
+  const filteredTasks = tasks.filter((task) =>
+    task.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase().trim())
+  )
+
   // Reset to page 1 if current page is invalid after tasks change or itemsPerPage change
   useEffect(() => {
-    const totalPages = Math.ceil(tasks.length / itemsPerPage)
+    const totalPages = Math.ceil(filteredTasks.length / itemsPerPage)
     if (currentPage > totalPages && totalPages > 0) {
       setCurrentPage(1)
     } else if (totalPages === 0 && currentPage > 1) {
       setCurrentPage(1)
     }
-  }, [tasks.length, currentPage, itemsPerPage])
-
-  const handleLanguageToggle = () => {
-    changeLanguage(language === 'en' ? 'ar' : 'en')
-  }
+  }, [filteredTasks.length, currentPage, itemsPerPage])
 
   const handlePrevious = async () => {
     if (currentPage > 1) {
@@ -87,7 +111,7 @@ function Dashboard() {
     }
   }
 
-  const totalItems = tasks.length
+  const totalItems = filteredTasks.length
   const totalPages = Math.ceil(totalItems / itemsPerPage)
 
   const handleNext = async () => {
@@ -100,10 +124,15 @@ function Dashboard() {
     }
   }
 
-  // Calculate paginated tasks
+  // Calculate paginated tasks from filtered tasks
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const paginatedTasks = tasks.slice(startIndex, endIndex)
+  const paginatedTasks = filteredTasks.slice(startIndex, endIndex)
+
+  // Reset to page 1 when debounced search query changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [debouncedSearchQuery])
 
   const handleCreateTask = async (taskData: { title: string; description: string; status: string }) => {
     setIsCreatingTask(true)
@@ -267,12 +296,17 @@ function Dashboard() {
 
               {/* Search and Filter */}
               <div className="flex flex-col sm:flex-row gap-4">
-                <SearchBar />
+                <SearchBar value={searchQuery} onChange={setSearchQuery} />
                 <StatusFilter onCreateStatus={handleCreateStatus} isLoading={isCreatingStatus} />
               </div>
 
               {/* Task Table or Empty State */}
               {isTasksEmpty ? (
+                <EmptyState 
+                  isStatus={false} 
+                  onCreateClick={() => setIsCreateTaskModalOpen(true)} 
+                />
+              ) : filteredTasks.length === 0 ? (
                 <EmptyState 
                   isStatus={false} 
                   onCreateClick={() => setIsCreateTaskModalOpen(true)} 
@@ -284,7 +318,7 @@ function Dashboard() {
                     <TaskTable 
                       tasks={paginatedTasks} 
                       onToggleFavorite={handleToggleFavorite}
-                      isLoading={isLoadingPage}
+                      isLoading={isLoadingPage || isSearching}
                     />
                   </div>
 
