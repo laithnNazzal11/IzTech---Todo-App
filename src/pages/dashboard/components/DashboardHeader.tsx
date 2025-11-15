@@ -1,8 +1,11 @@
-import { Languages, Moon, User } from 'lucide-react'
+import { Languages, Moon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/brand/Logo'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { storage, STORAGE_KEYS } from '@/utils/storage'
+import type { User } from '@/types'
+import { useEffect, useState } from 'react'
 
 interface DashboardHeaderProps {
   onToggleLanguage: () => void
@@ -12,14 +15,22 @@ interface DashboardHeaderProps {
 function DashboardHeader({ onToggleLanguage, onToggleTheme }: DashboardHeaderProps) {
   const { theme } = useTheme()
   const { language } = useLanguage()
+  const [userAvatar, setUserAvatar] = useState<string | null>(null)
+
+  useEffect(() => {
+    const currentUser = storage.get<User>(STORAGE_KEYS.CURRENT_USER)
+    if (currentUser?.avatar) {
+      setUserAvatar(currentUser.avatar)
+    }
+  }, [])
 
   return (
-    <header className="flex w-full mt-3 h-[84px] sm:h-[84px] md:h-[64px] items-center justify-between rounded-lg md:rounded-[8px] opacity-100 py-[22px] px-4 sm:py-[22px] sm:px-8 md:py-0 md:px-8">
+    <header className="flex w-full mt-3 h-[84px] sm:h-[84px] md:h-[64px] items-center justify-between rounded-lg md:rounded-[8px] opacity-100 py-[22px] px-4 sm:py-6 sm:px-8  md:px-8">
       <div className="w-[92.5px] h-[28px] opacity-100">
         <Logo variant="light" size="md" theme={theme} className="gap-[3.5px]" />
       </div>
       
-      <div className="flex items-center  h-[40px] gap-6 opacity-100">
+      <div className="flex items-center  h-[40px] gap-4 opacity-100">
         <Button
           variant="ghost"
           size="icon"
@@ -29,7 +40,7 @@ function DashboardHeader({ onToggleLanguage, onToggleTheme }: DashboardHeaderPro
         >
           <Languages
             key={language}
-            className="relative left-[-0.8px] h-[32px] w-[32px] animate-toggle-theme transition-colors duration-300 ease-in-out"
+            className="relative left-[-0.8px] h-10 w-10 animate-toggle-theme transition-colors duration-300 ease-in-out"
             strokeWidth={2}
             style={{
               color: 'hsl(var(--foreground))',
@@ -47,7 +58,7 @@ function DashboardHeader({ onToggleLanguage, onToggleTheme }: DashboardHeaderPro
         >
           <Moon
             key={theme}
-            className="relative left-[3.34px] top-[3.32px] h-[33.33333969116211px] w-[32.189388275146484px] animate-toggle-theme transition-colors duration-300 ease-in-out"
+            className="relative left-[3.34px] top-[3.32px] h-10 w-10 animate-toggle-theme transition-colors duration-300 ease-in-out"
             strokeWidth={2}
             fill={theme === 'dark' ? 'currentColor' : 'none'}
             style={{
@@ -63,8 +74,20 @@ function DashboardHeader({ onToggleLanguage, onToggleTheme }: DashboardHeaderPro
           className="relative h-auto w-auto p-0 text-foreground hover:bg-transparent"
           aria-label="Profile"
         >
-          <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-400 via-blue-400 to-pink-400 flex items-center justify-center">
-            <User className="h-4 w-4 text-white" />
+          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-400 via-blue-400 to-pink-400 flex items-center justify-center overflow-hidden opacity-100">
+            {userAvatar ? (
+              <img
+                src={userAvatar}
+                alt="Avatar"
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <img
+                src="/images/Avatar.png"
+                alt="Avatar"
+                className="h-full w-full object-contain"
+              />
+            )}
           </div>
         </Button>
 
