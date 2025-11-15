@@ -79,7 +79,7 @@ function Dashboard() {
       </div>
 
       {/* Bottom Container */}
-      <div className="w-full mt-4 md:mt-12">
+      <div className="w-full mt-4 md:mt-10">
         <DashboardContent>
         {/* My Tasks Section */}
         <div className="flex flex-col gap-[24px]">

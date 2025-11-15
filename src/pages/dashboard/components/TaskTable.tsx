@@ -60,9 +60,13 @@ function TaskTable({ tasks }: TaskTableProps) {
               />
               {/* Desktop: Status badge */}
               <span
-                className="hidden sm:flex w-[104px] h-[38px] rounded-md items-center justify-center opacity-100"
+                className="hidden sm:flex w-[104px] h-[38px] rounded-md items-center justify-center opacity-100 gap-[10px]"
                 style={{
                   background: 'hsla(255, 83%, 62%, 0.1)',
+                  paddingTop: '8px',
+                  paddingRight: '4px',
+                  paddingBottom: '8px',
+                  paddingLeft: '4px',
                 }}
               >
                 <p

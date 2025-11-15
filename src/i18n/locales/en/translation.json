@@ -35,7 +35,9 @@
     "description": "Description",
     "inProgress": "In Progress",
     "of": "of",
-    "search": "Search..."
+    "search": "Search...",
+    "profile": "Profile",
+    "exit": "Exit"
   }
 }
 

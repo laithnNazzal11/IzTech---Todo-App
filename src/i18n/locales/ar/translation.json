@@ -35,7 +35,9 @@
     "description": "الوصف",
     "inProgress": "قيد التنفيذ",
     "of": "من",
-    "search": "بحث..."
+    "search": "بحث...",
+    "profile": "الملف",
+    "exit": "خروج"
   }
 }
 

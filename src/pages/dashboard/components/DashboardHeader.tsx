@@ -5,7 +5,8 @@ import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { storage, STORAGE_KEYS } from '@/utils/storage'
 import type { User } from '@/types'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import AvatarPopover from './popovers/AvatarPopover'
 
 interface DashboardHeaderProps {
   onToggleLanguage: () => void
@@ -16,6 +17,8 @@ function DashboardHeader({ onToggleLanguage, onToggleTheme }: DashboardHeaderPro
   const { theme } = useTheme()
   const { language } = useLanguage()
   const [userAvatar, setUserAvatar] = useState<string | null>(null)
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false)
+  const avatarButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     const currentUser = storage.get<User>(STORAGE_KEYS.CURRENT_USER)
@@ -23,6 +26,10 @@ function DashboardHeader({ onToggleLanguage, onToggleTheme }: DashboardHeaderPro
       setUserAvatar(currentUser.avatar)
     }
   }, [])
+
+  const handleAvatarClick = () => {
+    setIsPopoverOpen(!isPopoverOpen)
+  }
 
   return (
     <header className="flex w-full mt-3 h-[84px] sm:h-[84px] md:h-[64px] items-center justify-between rounded-lg md:rounded-[8px] opacity-100 py-[22px] px-4 sm:py-6 sm:px-8  md:px-8">
@@ -68,28 +75,38 @@ function DashboardHeader({ onToggleLanguage, onToggleTheme }: DashboardHeaderPro
           />
         </Button>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative h-auto w-auto p-0 text-foreground hover:bg-transparent"
-          aria-label="Profile"
-        >
-          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-400 via-blue-400 to-pink-400 flex items-center justify-center overflow-hidden opacity-100">
-            {userAvatar ? (
-              <img
-                src={userAvatar}
-                alt="Avatar"
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <img
-                src="/images/Avatar.png"
-                alt="Avatar"
-                className="h-full w-full object-contain"
-              />
-            )}
-          </div>
-        </Button>
+        <div className="relative flex items-center">
+          <Button
+            ref={avatarButtonRef}
+            variant="ghost"
+            size="icon"
+            className="relative h-10 w-10 p-0 text-foreground hover:bg-transparent flex items-center justify-center"
+            aria-label="Profile"
+            onClick={handleAvatarClick}
+          >
+            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-400 via-blue-400 to-pink-400 flex items-center justify-center overflow-hidden opacity-100">
+              {userAvatar ? (
+                <img
+                  src={userAvatar}
+                  alt="Avatar"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <img
+                  src="/images/Avatar.png"
+                  alt="Avatar"
+                  className="h-full w-full object-contain"
+                />
+              )}
+            </div>
+          </Button>
+
+          <AvatarPopover
+            isOpen={isPopoverOpen}
+            onClose={() => setIsPopoverOpen(false)}
+            triggerRef={avatarButtonRef as React.RefObject<HTMLElement | null>}
+          />
+        </div>
 
       </div>
     </header>
