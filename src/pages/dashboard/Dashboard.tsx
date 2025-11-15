@@ -158,6 +158,37 @@ function Dashboard() {
     }
   }
 
+  const handleToggleFavorite = (taskId: string) => {
+    // Get current user
+    const currentUser = getCurrentUser()
+    if (!currentUser) return
+
+    // Update task's favorite status
+    const updatedTasks = tasks.map((task) =>
+      task.id === taskId
+        ? { ...task, isFavorite: !task.isFavorite, updatedAt: new Date().toISOString() }
+        : task
+    )
+
+    const updatedUser = {
+      ...currentUser,
+      tasks: updatedTasks,
+    }
+
+    // Update localStorage - CURRENT_USER
+    storage.set(STORAGE_KEYS.CURRENT_USER, updatedUser)
+
+    // Update localStorage - USERS array
+    const users = storage.get<User[]>(STORAGE_KEYS.USERS) || []
+    const updatedUsers = users.map((user) =>
+      user.id === currentUser.id ? updatedUser : user
+    )
+    storage.set(STORAGE_KEYS.USERS, updatedUsers)
+
+    // Update local state
+    setTasks(updatedTasks)
+  }
+
   // Check if status array is empty
   const isStatusEmpty = !status || status.length === 0
   // Check if tasks array is empty (but status exists)
@@ -213,7 +244,7 @@ function Dashboard() {
                 <>
                   {/* Task Table */}
                   <div className="mt-[24px] mb-4">
-                    <TaskTable tasks={tasks} />
+                    <TaskTable tasks={tasks} onToggleFavorite={handleToggleFavorite} />
                   </div>
 
                   {/* Pagination */}

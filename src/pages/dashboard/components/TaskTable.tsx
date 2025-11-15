@@ -8,9 +8,10 @@ import TaskActionsPopover from './popovers/TaskActionsPopover'
 
 interface TaskTableProps {
   tasks: Task[]
+  onToggleFavorite?: (taskId: string) => void
 }
 
-function TaskTable({ tasks }: TaskTableProps) {
+function TaskTable({ tasks, onToggleFavorite }: TaskTableProps) {
   const { t } = useTranslation()
   const [openPopoverId, setOpenPopoverId] = useState<string | null>(null)
   const [statuses, setStatuses] = useState<Status[]>([])
@@ -86,7 +87,14 @@ function TaskTable({ tasks }: TaskTableProps) {
             key={task.id}
             className="grid grid-cols-[24px_1fr_0.2fr_10px] sm:grid-cols-[24px_2fr_3fr_.5fr_10px] gap-y-3 gap-x-6 sm:gap-4 py-3 border-b border-b-[hsla(180,33%,99%,1)] hover:bg-muted/50 transition-colors cursor-pointer"
           >
-            <div className="flex items-center justify-center" style={{ width: '24px' }}>
+            <div 
+              className="flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity" 
+              style={{ width: '24px' }}
+              onClick={(e) => {
+                e.stopPropagation()
+                onToggleFavorite?.(task.id)
+              }}
+            >
               {task.isFavorite ? (
                 <Star className="h-6 w-6 fill-primary text-primary opacity-100" />
               ) : (
