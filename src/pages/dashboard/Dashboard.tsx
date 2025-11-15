@@ -65,18 +65,6 @@ function Dashboard() {
 
   return (
     <section className="flex min-h-screen w-full flex-col bg-background text-foreground px-[8px] sm:px-4 md:px-0">
-      <style>{`
-        .create-task-btn {
-          background: hsla(350, 96%, 43%, 1);
-          box-shadow: 0px 1px 2px 0px hsla(0, 0%, 0%, 0.06), 0px 1px 3px 0px hsla(0, 0%, 0%, 0.1);
-        }
-        @media (min-width: 391px) {
-          .create-task-btn {
-            background: hsl(var(--primary)) !important;
-            box-shadow: none !important;
-          }
-        }
-      `}</style>
       {/* Top Container */}
       <div className="w-full">
         <DashboardHeader
@@ -96,7 +84,7 @@ function Dashboard() {
             </h1>
             <Button
               onClick={() => setIsCreateTaskModalOpen(true)}
-              className="create-task-btn w-12 h-8 gap-2 py-2 px-1 rounded-md opacity-100 sm:w-[142px] sm:h-[36px] sm:bg-primary sm:text-primary-foreground sm:hover:bg-primary/90"
+              className="w-12 h-8 gap-2 py-2 px-1 rounded-md opacity-100 transition-all duration-200 bg-[hsla(350,96%,43%,1)] shadow-[0px_1px_2px_0px_hsla(0,0%,0%,0.06),0px_1px_3px_0px_hsla(0,0%,0%,0.1)] hover:bg-[hsla(350,96%,38%,1)] hover:shadow-[0px_2px_4px_0px_hsla(0,0%,0%,0.1),0px_2px_6px_0px_hsla(0,0%,0%,0.15)] sm:w-[142px] sm:h-[36px] sm:bg-primary sm:text-primary-foreground sm:shadow-none sm:hover:bg-primary/90 sm:hover:shadow-[0px_2px_4px_0px_hsla(0,0%,0%,0.1)]"
             >
               <Plus className="h-4 w-4 text-white sm:hidden" />
               <span className="hidden sm:inline">{t('dashboard.createNewTask')}</span>

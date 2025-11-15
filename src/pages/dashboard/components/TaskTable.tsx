@@ -57,7 +57,7 @@ function TaskTable({ tasks }: TaskTableProps) {
         {tasks.map((task) => (
           <div
             key={task.id}
-            className="grid grid-cols-[24px_1fr_0.2fr_10px] sm:grid-cols-[24px_2fr_3fr_.5fr_10px] gap-y-3 gap-x-6 sm:gap-4 py-3 border-b border-b-[hsla(180,33%,99%,1)]"
+            className="grid grid-cols-[24px_1fr_0.2fr_10px] sm:grid-cols-[24px_2fr_3fr_.5fr_10px] gap-y-3 gap-x-6 sm:gap-4 py-3 border-b border-b-[hsla(180,33%,99%,1)] hover:bg-muted/50 transition-colors cursor-pointer"
           >
             <div className="flex items-center justify-center" style={{ width: '24px' }}>
               {task.isFavorite ? (

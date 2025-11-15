@@ -119,14 +119,12 @@ function CreateStatusModal({
               {t("dashboard.selectColor")}
             </Label>
             {/* Color Swatches - width 400, height 48, gap 8px */}
-            <div className="relative flex w-full h-[48px] gap-1 opacity-100  gap-[8px]">
+            <div className="relative flex w-full h-[48px] gap-1 opacity-100  gap-[0px] sm:gap-[8px]">
               {colorPalette.map((color) => (
                 <div
                   key={color}
-                  className="flex items-center justify-center w-[43px] h-[43px]"
+                  className="flex items-center justify-center w-[43px] h-[43px] rounded-[8px] bg-transparent"
                   style={{
-                    borderRadius: "8px",
-                    backgroundColor: "transparent",
                     border:
                       selectedColor === color
                         ? `1px solid ${color}`
@@ -136,11 +134,10 @@ function CreateStatusModal({
                   <button
                     onClick={() => setSelectedColor(color)}
                     className={cn(
-                      "flex-shrink-0 w-[30px] h-[30px] cursor-pointer transition-all opacity-100"
+                      "flex-shrink-0 w-[30px] h-[30px] cursor-pointer transition-all opacity-100 rounded-[6px]"
                     )}
                     style={{
                       backgroundColor: color,
-                      borderRadius: "6px",
                     }}
                     aria-label={`Select color ${color}`}
                   />
