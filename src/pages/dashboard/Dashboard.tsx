@@ -33,7 +33,10 @@ function Dashboard() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [status, setStatus] = useState<Status[]>([])
   const [isLoadingPage, setIsLoadingPage] = useState(false)
-  const itemsPerPage = 7
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+  
+  // Responsive items per page: 4 for mobile (< 640px), 7 for desktop (>= 640px)
+  const itemsPerPage = windowWidth < 391 ? 4 : 7
 
   useEffect(() => {
     // Redirect to signin if not authenticated
@@ -50,10 +53,22 @@ function Dashboard() {
     }
   }, [navigate])
 
-  // Reset to page 1 if current page is invalid after tasks change
+  // Track window width for responsive pagination
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth)
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // Reset to page 1 if current page is invalid after tasks change or itemsPerPage change
   useEffect(() => {
     const totalPages = Math.ceil(tasks.length / itemsPerPage)
     if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(1)
+    } else if (totalPages === 0 && currentPage > 1) {
       setCurrentPage(1)
     }
   }, [tasks.length, currentPage, itemsPerPage])
