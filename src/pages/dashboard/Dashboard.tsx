@@ -32,6 +32,7 @@ function Dashboard() {
   const [isCreatingStatus, setIsCreatingStatus] = useState(false)
   const [tasks, setTasks] = useState<Task[]>([])
   const [status, setStatus] = useState<Status[]>([])
+  const [isLoadingPage, setIsLoadingPage] = useState(false)
   const itemsPerPage = 7
 
   useEffect(() => {
@@ -49,24 +50,45 @@ function Dashboard() {
     }
   }, [navigate])
 
+  // Reset to page 1 if current page is invalid after tasks change
+  useEffect(() => {
+    const totalPages = Math.ceil(tasks.length / itemsPerPage)
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(1)
+    }
+  }, [tasks.length, currentPage, itemsPerPage])
+
   const handleLanguageToggle = () => {
     changeLanguage(language === 'en' ? 'ar' : 'en')
   }
 
-  const handlePrevious = () => {
+  const handlePrevious = async () => {
     if (currentPage > 1) {
+      setIsLoadingPage(true)
+      // Mock loading delay
+      await new Promise((resolve) => setTimeout(resolve, 500))
       setCurrentPage(currentPage - 1)
+      setIsLoadingPage(false)
     }
   }
 
   const totalItems = tasks.length
   const totalPages = Math.ceil(totalItems / itemsPerPage)
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentPage < totalPages) {
+      setIsLoadingPage(true)
+      // Mock loading delay
+      await new Promise((resolve) => setTimeout(resolve, 500))
       setCurrentPage(currentPage + 1)
+      setIsLoadingPage(false)
     }
   }
+
+  // Calculate paginated tasks
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const paginatedTasks = tasks.slice(startIndex, endIndex)
 
   const handleCreateTask = async (taskData: { title: string; description: string; status: string }) => {
     setIsCreatingTask(true)
@@ -244,7 +266,11 @@ function Dashboard() {
                 <>
                   {/* Task Table */}
                   <div className="mt-[24px] mb-4">
-                    <TaskTable tasks={tasks} onToggleFavorite={handleToggleFavorite} />
+                    <TaskTable 
+                      tasks={paginatedTasks} 
+                      onToggleFavorite={handleToggleFavorite}
+                      isLoading={isLoadingPage}
+                    />
                   </div>
 
                   {/* Pagination */}

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Star, MoreHorizontal } from 'lucide-react'
+import { Star, MoreHorizontal, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useTranslation } from 'react-i18next'
 import { getCurrentUser } from '@/utils/auth'
@@ -9,9 +9,10 @@ import TaskActionsPopover from './popovers/TaskActionsPopover'
 interface TaskTableProps {
   tasks: Task[]
   onToggleFavorite?: (taskId: string) => void
+  isLoading?: boolean
 }
 
-function TaskTable({ tasks, onToggleFavorite }: TaskTableProps) {
+function TaskTable({ tasks, onToggleFavorite, isLoading = false }: TaskTableProps) {
   const { t } = useTranslation()
   const [openPopoverId, setOpenPopoverId] = useState<string | null>(null)
   const [statuses, setStatuses] = useState<Status[]>([])
@@ -82,11 +83,16 @@ function TaskTable({ tasks, onToggleFavorite }: TaskTableProps) {
 
       {/* Table Rows */}
       <div className="flex flex-col">
-        {tasks.map((task) => (
-          <div
-            key={task.id}
-            className="grid grid-cols-[24px_1fr_0.2fr_10px] sm:grid-cols-[24px_2fr_3fr_.5fr_10px] gap-y-3 gap-x-6 sm:gap-4 py-3 border-b border-b-[hsla(180,33%,99%,1)] hover:bg-muted/50 transition-colors cursor-pointer"
-          >
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          </div>
+        ) : (
+          tasks.map((task) => (
+            <div
+              key={task.id}
+              className="grid grid-cols-[24px_1fr_0.2fr_10px] sm:grid-cols-[24px_2fr_3fr_.5fr_10px] gap-y-3 gap-x-6 sm:gap-4 py-3 border-b border-b-[hsla(180,33%,99%,1)] hover:bg-muted/50 transition-colors cursor-pointer"
+            >
             <div 
               className="flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity" 
               style={{ width: '24px' }}
@@ -159,7 +165,8 @@ function TaskTable({ tasks, onToggleFavorite }: TaskTableProps) {
               />
             </div>
           </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   )
