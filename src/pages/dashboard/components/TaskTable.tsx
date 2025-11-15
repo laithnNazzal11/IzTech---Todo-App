@@ -120,6 +120,7 @@ function TaskTable({ tasks }: TaskTableProps) {
                 onStatusChange={(newStatus) => handleStatusChange(task.id, newStatus)}
                 onEdit={() => handleEdit(task.id)}
                 onDelete={() => handleDelete(task.id)}
+                taskStatus={task.status}
               />
             </div>
           </div>

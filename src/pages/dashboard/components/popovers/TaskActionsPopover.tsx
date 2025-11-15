@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { Zap } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useTranslation } from 'react-i18next'
 import Popover from './Popover'
+import DeleteStatusModal from '../modals/DeleteStatusModal'
 
 interface TaskActionsPopoverProps {
   isOpen: boolean
@@ -11,6 +13,7 @@ interface TaskActionsPopoverProps {
   onStatusChange?: (status: string) => void
   onEdit?: () => void
   onDelete?: () => void
+  taskStatus?: string
 }
 
 // Available statuses with their colors
@@ -26,10 +29,12 @@ function TaskActionsPopover({
   onStatusChange,
   onEdit,
   onDelete,
+  taskStatus,
 }: TaskActionsPopoverProps) {
   const { theme } = useTheme()
   const { language } = useLanguage()
   const { t } = useTranslation()
+  const [isDeleteStatusModalOpen, setIsDeleteStatusModalOpen] = useState(false)
 
   const handleStatusClick = (status: string) => {
     onStatusChange?.(status)
@@ -42,11 +47,21 @@ function TaskActionsPopover({
   }
 
   const handleDelete = () => {
-    onDelete?.()
+    setIsDeleteStatusModalOpen(true)
     onClose()
   }
 
+  const handleDeleteStatus = () => {
+    onDelete?.()
+    setIsDeleteStatusModalOpen(false)
+  }
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteStatusModalOpen(false)
+  }
+
   return (
+    <>
     <Popover
       isOpen={isOpen}
       onClose={onClose}
@@ -163,6 +178,15 @@ function TaskActionsPopover({
         </div>
       </div>
     </Popover>
+    
+    {/* Delete Status Modal */}
+    <DeleteStatusModal
+      isOpen={isDeleteStatusModalOpen}
+      onClose={handleCloseDeleteModal}
+      onDelete={handleDeleteStatus}
+      statusName={taskStatus}
+    />
+    </>
   )
 }
 

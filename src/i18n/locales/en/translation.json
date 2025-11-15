@@ -50,7 +50,17 @@
     "createStatus": "Create Status",
     "statusTitle": "Status title",
     "statusTitlePlaceholder": "Done",
-    "selectColor": "Select Color"
+    "selectColor": "Select Color",
+    "deleteStatus": "Delete Status",
+    "deleteStatusWarning": "Beware! You're About to Erase the",
+    "deleteStatusWarningName": "\"{{statusName}}\"!",
+    "deleteStatusDescription": "All tasks in this status will vanish into the void forever...\nOnce they're gone, there's no bringing them back!",
+    "deleteStatusButton": "Delete the Status",
+    "statusToDo": "To Do",
+    "statusInProgress": "In Progress",
+    "statusDone": "Done",
+    "statusDoIt": "Do It",
+    "statusWord": "Status"
   }
 }
 

@@ -126,6 +126,7 @@ function CreateStatusModal({
                   className="flex items-center justify-center w-[43px] h-[43px] rounded-[8px] bg-transparent"
                   style={{
                     border:
+                    
                       selectedColor === color
                         ? `1px solid ${color}`
                         : "2px solid transparent",

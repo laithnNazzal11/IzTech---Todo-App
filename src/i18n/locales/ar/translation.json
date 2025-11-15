@@ -50,7 +50,17 @@
     "createStatus": "إنشاء حالة",
     "statusTitle": "عنوان الحالة",
     "statusTitlePlaceholder": "تم",
-    "selectColor": "اختر اللون"
+    "selectColor": "اختر اللون",
+    "deleteStatus": "حذف الحالة",
+    "deleteStatusWarning": "احذر! أنت على وشك حذف",
+    "deleteStatusWarningName": "\"{{statusName}}\"!",
+    "deleteStatusDescription": "ستختفي جميع المهام في هذه الحالة إلى الأبد...\nبمجرد اختفائها، لا يمكن إرجاعها!",
+    "deleteStatusButton": "حذف الحالة",
+    "statusToDo": "للقيام",
+    "statusInProgress": "قيد التنفيذ",
+    "statusDone": "تم",
+    "statusDoIt": "افعلها",
+    "statusWord": "حالة"
   }
 }
 
