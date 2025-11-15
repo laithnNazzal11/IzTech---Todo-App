@@ -24,16 +24,20 @@ export interface SignUpData {
   avatar?: string
 }
 
+export interface SignInData {
+  email: string
+  password: string
+}
+
 export interface SignUpValidationError {
   field: 'name' | 'email' | 'password'
   message: string
 }
 
-/**
- * Validates signup form data
+/*
  * @param data - Signup form data
- * @returns Array of validation errors, empty if valid
  */
+
 export function validateSignUp(data: SignUpData): SignUpValidationError[] {
   const errors: SignUpValidationError[] = []
 
@@ -146,5 +150,32 @@ export function createUser(data: SignUpData): User {
   storage.set(STORAGE_KEYS.CURRENT_USER, newUser)
 
   return newUser
+}
+
+/**
+ * Signs in a user by checking email and password
+ * @param data - Sign in form data (email and password)
+ * @returns User object if credentials are correct
+ * @throws Error if email or password is incorrect
+ */
+export function signIn(data: SignInData): User {
+  // Get all users
+  const users = storage.get<User[]>(STORAGE_KEYS.USERS) || []
+
+  // Find user with matching email and password
+  const user = users.find(
+    (u) =>
+      u.email.toLowerCase().trim() === data.email.toLowerCase().trim() &&
+      u.password === data.password
+  )
+
+  if (!user) {
+    throw new Error('Email or password is incorrect')
+  }
+
+  // Set as current user (authenticate user)
+  storage.set(STORAGE_KEYS.CURRENT_USER, user)
+
+  return user
 }
 

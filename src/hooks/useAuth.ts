@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createUser, imageToBase64, type SignUpData } from '@/utils/auth'
-import type { User } from '@/types'
+import { createUser, signIn, imageToBase64, type SignUpData, type SignInData } from '@/utils/auth'
 
 export interface UseAuthReturn {
   signUp: (data: SignUpData, avatarFile?: File) => Promise<void>
+  signIn: (data: SignInData) => Promise<void>
   isLoading: boolean
   error: string | null
   clearError: () => void
@@ -54,8 +54,32 @@ export function useAuth(): UseAuthReturn {
     }
   }
 
+  const signInUser = async (data: SignInData): Promise<void> => {
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      // Mock loading delay of 3 seconds
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      // Sign in user (this will validate credentials and set current user)
+      signIn(data)
+
+      // Navigate to dashboard on success
+      navigate('/dashboard')
+    } catch (err) {
+      // Set error message
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred during signin'
+      setError(errorMessage)
+      throw err
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return {
     signUp,
+    signIn: signInUser,
     isLoading,
     error,
     clearError,
