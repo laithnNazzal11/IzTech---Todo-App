@@ -41,9 +41,9 @@ function TaskTable({ tasks }: TaskTableProps) {
   }
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full bg-background" style={{ boxShadow: '0px 1px 2px 0px hsla(0, 0%, 0%, 0.05)' }}>
       {/* Table Header */}
-      <div className="grid grid-cols-[24px_1fr_0.2fr_10px] sm:grid-cols-[24px_2fr_3fr_.5fr_10px] gap-y-4 gap-x-6 sm:gap-4 pb-2">
+      <div className="grid grid-cols-[24px_1fr_0.2fr_10px] sm:grid-cols-[24px_2fr_3fr_.5fr_10px] gap-y-4 gap-x-6 sm:gap-4 pb-2 border-b border-b-[hsla(180,33%,99%,1)]">
         <div className="font-primary text-sm font-[700] text-foreground"></div>
         <div className="font-primary text-sm font-[700] text-foreground">{t('dashboard.title')}</div>
         <div className="font-primary text-sm font-[700] text-foreground hidden sm:block">{t('dashboard.description')}</div>
@@ -57,7 +57,7 @@ function TaskTable({ tasks }: TaskTableProps) {
         {tasks.map((task) => (
           <div
             key={task.id}
-            className="grid grid-cols-[24px_1fr_0.2fr_10px] sm:grid-cols-[24px_2fr_3fr_.5fr_10px] gap-y-3 gap-x-6 sm:gap-4 py-3 "
+            className="grid grid-cols-[24px_1fr_0.2fr_10px] sm:grid-cols-[24px_2fr_3fr_.5fr_10px] gap-y-3 gap-x-6 sm:gap-4 py-3 border-b border-b-[hsla(180,33%,99%,1)]"
           >
             <div className="flex items-center justify-center" style={{ width: '24px' }}>
               {task.isFavorite ? (

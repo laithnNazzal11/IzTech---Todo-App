@@ -1,5 +1,6 @@
-import { Zap, Pencil, Trash2 } from 'lucide-react'
+import { Zap } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
+import { useLanguage } from '@/contexts/LanguageContext'
 import { useTranslation } from 'react-i18next'
 import Popover from './Popover'
 
@@ -27,7 +28,10 @@ function TaskActionsPopover({
   onDelete,
 }: TaskActionsPopoverProps) {
   const { theme } = useTheme()
+  const { language } = useLanguage()
   const { t } = useTranslation()
+  
+  const iconTextGap = language === 'ar' ? '12px' : '8px'
 
   const handleStatusClick = (status: string) => {
     onStatusChange?.(status)
@@ -84,7 +88,7 @@ function TaskActionsPopover({
                 className="font-primary text-sm"
                 style={{
                   color: theme === 'dark' ? 'hsla(0, 0%, 100%, 1)' : undefined,
-                  marginLeft: '8px', // Align with text position: 4px (outer) + 4px (inner) + 16px (icon) + 8px (gap) - 4px (button padding) = 28px
+                  [language === 'ar' ? 'marginRight' : 'marginLeft']: iconTextGap,
                 }}
               >
                 {t('dashboard.changeTo')}
@@ -104,14 +108,16 @@ function TaskActionsPopover({
                     width: '16px',
                     height: '16px',
                     backgroundColor: status.color,
-                    marginLeft: '8px', // Align with text position: 4px (outer) + 4px (inner) + 16px (icon) + 8px (gap) - 4px (button padding) = 28px
+                    marginLeft: '8px',
+                    marginRight: '8px', 
+
                   }}
                 />
                 <span
                   className="font-primary text-sm"
                   style={{
                     color: theme === 'dark' ? 'hsla(0, 0%, 100%, 1)' : undefined,
-                    marginLeft: '8px',
+
                   }}
                 >
                   {status.name}
@@ -160,18 +166,27 @@ function TaskActionsPopover({
               height: '100%',
             }}
           >
-            <Pencil
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
-              strokeWidth={2}
-              style={{
-                color: theme === 'dark' ? 'hsla(0, 0%, 100%, 1)' : undefined,
-              }}
-            />
+            >
+              <path
+                d="M8 2.00016H3.33333C2.97971 2.00016 2.64057 2.14064 2.39052 2.39069C2.14048 2.64074 2 2.97987 2 3.3335V12.6668C2 13.0205 2.14048 13.3596 2.39052 13.6096C2.64057 13.8597 2.97971 14.0002 3.33333 14.0002H12.6667C13.0203 14.0002 13.3594 13.8597 13.6095 13.6096C13.8595 13.3596 14 13.0205 14 12.6668V8.00016M12.2501 1.75015C12.5153 1.48493 12.875 1.33594 13.2501 1.33594C13.6251 1.33594 13.9848 1.48493 14.2501 1.75015C14.5153 2.01537 14.6643 2.37508 14.6643 2.75015C14.6643 3.12522 14.5153 3.48493 14.2501 3.75015L8.2414 9.75948C8.0831 9.91765 7.88753 10.0334 7.67273 10.0962L5.7574 10.6562C5.70003 10.6729 5.63922 10.6739 5.58134 10.6591C5.52345 10.6442 5.47061 10.6141 5.42836 10.5719C5.38611 10.5296 5.35599 10.4768 5.34116 10.4189C5.32633 10.361 5.32733 10.3002 5.34406 10.2428L5.90406 8.32748C5.96708 8.11285 6.08309 7.91752 6.2414 7.75948L12.2501 1.75015Z"
+                stroke={theme === 'dark' ? 'hsla(0, 0%, 100%, 1)' : '#474747'}
+                strokeWidth="1.33"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
             <span
               className="font-primary text-sm"
               style={{
                 color: theme === 'dark' ? 'hsla(0, 0%, 100%, 1)' : undefined,
-                marginLeft: '8px',
+                [language === 'ar' ? 'marginRight' : 'marginLeft']: iconTextGap,
               }}
             >
               {t('dashboard.edit')}
@@ -218,18 +233,27 @@ function TaskActionsPopover({
               height: '100%',
             }}
           >
-            <Trash2
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 16 16"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
-              strokeWidth={2}
-              style={{
-                color: theme === 'dark' ? 'hsla(0, 0%, 100%, 1)' : undefined,
-              }}
-            />
+            >
+              <path
+                d="M2 4.00016H14M12.6667 4.00016V13.3335C12.6667 14.0002 12 14.6668 11.3333 14.6668H4.66667C4 14.6668 3.33333 14.0002 3.33333 13.3335V4.00016M5.33333 4.00016V2.66683C5.33333 2.00016 6 1.3335 6.66667 1.3335H9.33333C10 1.3335 10.6667 2.00016 10.6667 2.66683V4.00016"
+                stroke={theme === 'dark' ? 'hsla(0, 0%, 100%, 1)' : '#474747'}
+                strokeWidth="1.33"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
             <span
               className="font-primary text-sm"
               style={{
                 color: theme === 'dark' ? 'hsla(0, 0%, 100%, 1)' : undefined,
-                marginLeft: '8px',
+                [language === 'ar' ? 'marginRight' : 'marginLeft']: iconTextGap,
               }}
             >
               {t('dashboard.delete')}
