@@ -40,7 +40,7 @@ function DashboardHeader({ onToggleLanguage, onToggleTheme }: DashboardHeaderPro
         >
           <Languages
             key={language}
-            className="relative left-[-0.8px] h-10 w-10 animate-toggle-theme transition-colors duration-300 ease-in-out"
+            className="relative left-[-0.8px] h-8 w-8 animate-toggle-theme transition-colors duration-300 ease-in-out"
             strokeWidth={2}
             style={{
               color: 'hsl(var(--foreground))',
