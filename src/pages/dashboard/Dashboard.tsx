@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
+import { v4 as uuidv4 } from 'uuid'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { isAuth, getCurrentUser } from '@/utils/auth'
-import type { Task, Status } from '@/types'
+import { storage, STORAGE_KEYS } from '@/utils/storage'
+import type { Task, Status, User } from '@/types'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import DashboardHeader from './components/DashboardHeader'
@@ -26,6 +28,8 @@ function Dashboard() {
   const [currentPage, setCurrentPage] = useState(1)
   const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false)
   const [isCreateStatusModalOpen, setIsCreateStatusModalOpen] = useState(false)
+  const [isCreatingTask, setIsCreatingTask] = useState(false)
+  const [isCreatingStatus, setIsCreatingStatus] = useState(false)
   const [tasks, setTasks] = useState<Task[]>([])
   const [status, setStatus] = useState<Status[]>([])
   const itemsPerPage = 7
@@ -64,12 +68,94 @@ function Dashboard() {
     }
   }
 
-  const handleCreateTask = (_task: { title: string; description: string; status: string }) => {
-    // TODO: Implement task creation logic
+  const handleCreateTask = async (taskData: { title: string; description: string; status: string }) => {
+    setIsCreatingTask(true)
+
+    try {
+      // Mock loading delay
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      // Get current user
+      const currentUser = getCurrentUser()
+      if (!currentUser) return
+
+      // Create new task object
+      const newTask: Task = {
+        id: uuidv4(),
+        title: taskData.title.trim(),
+        description: taskData.description?.trim() || undefined,
+        status: taskData.status,
+        userId: currentUser.id,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        isFavorite: false,
+      }
+
+      // Update current user's tasks array
+      const updatedTasks = [...(currentUser.tasks || []), newTask]
+      const updatedUser = {
+        ...currentUser,
+        tasks: updatedTasks,
+      }
+
+      // Update localStorage - CURRENT_USER
+      storage.set(STORAGE_KEYS.CURRENT_USER, updatedUser)
+
+      // Update localStorage - USERS array
+      const users = storage.get<User[]>(STORAGE_KEYS.USERS) || []
+      const updatedUsers = users.map((user) =>
+        user.id === currentUser.id ? updatedUser : user
+      )
+      storage.set(STORAGE_KEYS.USERS, updatedUsers)
+
+      // Update local state
+      setTasks(updatedTasks)
+    } finally {
+      setIsCreatingTask(false)
+    }
   }
 
-  const handleCreateStatus = (_status: { title: string; color: string }) => {
-    // TODO: Implement status creation logic
+  const handleCreateStatus = async (statusData: { title: string; color: string }) => {
+    setIsCreatingStatus(true)
+
+    try {
+      // Mock loading delay
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+
+      // Get current user
+      const currentUser = getCurrentUser()
+      if (!currentUser) return
+
+      // Create new status object
+      const newStatus: Status = {
+        id: uuidv4(),
+        name: statusData.title.trim(),
+        color: statusData.color,
+        userId: currentUser.id,
+      }
+
+      // Update current user's status array
+      const updatedStatuses = [...(currentUser.status || []), newStatus]
+      const updatedUser = {
+        ...currentUser,
+        status: updatedStatuses,
+      }
+
+      // Update localStorage - CURRENT_USER
+      storage.set(STORAGE_KEYS.CURRENT_USER, updatedUser)
+
+      // Update localStorage - USERS array
+      const users = storage.get<User[]>(STORAGE_KEYS.USERS) || []
+      const updatedUsers = users.map((user) =>
+        user.id === currentUser.id ? updatedUser : user
+      )
+      storage.set(STORAGE_KEYS.USERS, updatedUsers)
+
+      // Update local state
+      setStatus(updatedStatuses)
+    } finally {
+      setIsCreatingStatus(false)
+    }
   }
 
   // Check if status array is empty
@@ -114,7 +200,7 @@ function Dashboard() {
               {/* Search and Filter */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <SearchBar />
-                <StatusFilter />
+                <StatusFilter onCreateStatus={handleCreateStatus} />
               </div>
 
               {/* Task Table or Empty State */}
@@ -151,6 +237,7 @@ function Dashboard() {
         isOpen={isCreateTaskModalOpen}
         onClose={() => setIsCreateTaskModalOpen(false)}
         onCreateTask={handleCreateTask}
+        isLoading={isCreatingTask}
       />
 
       {/* Create Status Modal */}
@@ -158,6 +245,7 @@ function Dashboard() {
         isOpen={isCreateStatusModalOpen}
         onClose={() => setIsCreateStatusModalOpen(false)}
         onCreateStatus={handleCreateStatus}
+        isLoading={isCreatingStatus}
       />
     </section>
   )

@@ -12,7 +12,8 @@ import { useLanguage } from "@/contexts/LanguageContext";
 interface CreateStatusModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onCreateStatus?: (status: { title: string; color: string }) => void;
+  onCreateStatus?: (status: { title: string; color: string }) => void | Promise<void>;
+  isLoading?: boolean;
 }
 
 // Color palette for status colors
@@ -31,6 +32,7 @@ function CreateStatusModal({
   isOpen,
   onClose,
   onCreateStatus,
+  isLoading = false,
 }: CreateStatusModalProps) {
   const { t } = useTranslation();
   const { theme } = useTheme();
@@ -39,9 +41,9 @@ function CreateStatusModal({
   const [title, setTitle] = useState("");
   const [selectedColor, setSelectedColor] = useState(colorPalette[0]);
 
-  const handleCreate = () => {
-    if (title.trim()) {
-      onCreateStatus?.({
+  const handleCreate = async () => {
+    if (title.trim() && !isLoading) {
+      await onCreateStatus?.({
         title: title.trim(),
         color: selectedColor,
       });
@@ -151,9 +153,10 @@ function CreateStatusModal({
         {/* Create Button */}
         <Button
           onClick={handleCreate}
-          className="w-full h-10 bg-primary text-primary-foreground hover:bg-primary/90 font-primary text-sm font-[700]"
+          disabled={isLoading}
+          className="w-full h-10 bg-primary text-primary-foreground hover:bg-primary/90 font-primary text-sm font-[700] disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {t("dashboard.create")}
+          {isLoading ? t("dashboard.creating") || "Creating..." : t("dashboard.create")}
         </Button>
       </div>
     </Modal>

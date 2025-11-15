@@ -1,4 +1,5 @@
 import { storage, STORAGE_KEYS } from './storage'
+import { v4 as uuidv4 } from 'uuid'
 import type { User } from '@/types'
 
 /**
@@ -140,6 +141,7 @@ export function createUser(data: SignUpData): User {
 
   // Create new user object
   const newUser: User = {
+    id: uuidv4(),
     name: data.name.trim(),
     email: data.email.toLowerCase().trim(),
     password: data.password, // In production, this should be hashed

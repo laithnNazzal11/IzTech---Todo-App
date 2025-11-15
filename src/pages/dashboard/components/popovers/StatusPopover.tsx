@@ -17,13 +17,15 @@ interface StatusPopoverProps {
   isOpen: boolean
   onClose: () => void
   triggerRef: React.RefObject<HTMLElement | null>
+  onCreateStatus?: (status: { title: string; color: string }) => void
 }
 
-function StatusPopover({ isOpen, onClose, triggerRef }: StatusPopoverProps) {
+function StatusPopover({ isOpen, onClose, triggerRef, onCreateStatus }: StatusPopoverProps) {
   const { theme } = useTheme()
   const { t } = useTranslation()
   const [isCreateStatusModalOpen, setIsCreateStatusModalOpen] = useState(false)
   const [statusesWithCount, setStatusesWithCount] = useState<StatusWithCount[]>([])
+  console.log("statusesWithCount",statusesWithCount)
 
   useEffect(() => {
     // Load current user from localStorage
@@ -33,6 +35,8 @@ function StatusPopover({ isOpen, onClose, triggerRef }: StatusPopoverProps) {
       setStatusesWithCount([])
       return
     }
+
+    console.log("currentUser",currentUser)
 
     const tasks = currentUser.tasks || []
     const statuses = currentUser.status || []
@@ -72,8 +76,8 @@ function StatusPopover({ isOpen, onClose, triggerRef }: StatusPopoverProps) {
     setIsCreateStatusModalOpen(false)
   }
 
-  const handleCreateStatus = (_status: { title: string; color: string }) => {
-    // TODO: Implement actual status creation logic
+  const handleCreateStatus = (status: { title: string; color: string }) => {
+    onCreateStatus?.(status)
     setIsCreateStatusModalOpen(false)
   }
 

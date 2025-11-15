@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ChevronDown, X } from 'lucide-react'
 import Modal from './Modal'
@@ -8,32 +8,61 @@ import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { getCurrentUser } from '@/utils/auth'
+import type { Status } from '@/types'
 
 interface CreateTaskModalProps {
   isOpen: boolean
   onClose: () => void
-  onCreateTask?: (task: { title: string; description: string; status: string }) => void
+  onCreateTask?: (task: { title: string; description: string; status: string }) => void | Promise<void>
+  isLoading?: boolean
 }
 
-// Mock statuses - replace with actual data
-const statuses = [
-  { id: 'todo', name: 'To Do' },
-  { id: 'in-progress', name: 'In Progress' },
-  { id: 'done', name: 'Done' },
-]
-
-function CreateTaskModal({ isOpen, onClose, onCreateTask }: CreateTaskModalProps) {
+function CreateTaskModal({ isOpen, onClose, onCreateTask, isLoading = false }: CreateTaskModalProps) {
   const { t } = useTranslation()
   const { theme } = useTheme()
   const { language } = useLanguage()
   const isRTL = language === 'ar'
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [status, setStatus] = useState('todo')
+  const [statuses, setStatuses] = useState<Status[]>([])
+  const [status, setStatus] = useState('')
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false)
+  const statusDropdownRef = useRef<HTMLDivElement>(null)
 
-  const handleCreate = () => {
-    if (title.trim()) {
-      onCreateTask?.({
+  useEffect(() => {
+    // Load statuses from current user
+    const currentUser = getCurrentUser()
+    if (currentUser && currentUser.status && currentUser.status.length > 0) {
+      setStatuses(currentUser.status)
+      // Set default status to first status
+      setStatus(currentUser.status[0].name)
+    } else {
+      setStatuses([])
+      setStatus('')
+    }
+  }, [isOpen]) // Reload when modal opens
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (statusDropdownRef.current && !statusDropdownRef.current.contains(event.target as Node)) {
+        setIsStatusDropdownOpen(false)
+      }
+    }
+
+    if (isStatusDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isStatusDropdownOpen])
+
+  const handleCreate = async () => {
+    if (title.trim() && status && !isLoading) {
+      await onCreateTask?.({
         title: title.trim(),
         description: description.trim(),
         status,
@@ -41,7 +70,12 @@ function CreateTaskModal({ isOpen, onClose, onCreateTask }: CreateTaskModalProps
       // Reset form
       setTitle('')
       setDescription('')
-      setStatus('todo')
+      const currentUser = getCurrentUser()
+      if (currentUser && currentUser.status && currentUser.status.length > 0) {
+        setStatus(currentUser.status[0].name)
+      } else {
+        setStatus('')
+      }
       onClose()
     }
   }
@@ -49,7 +83,12 @@ function CreateTaskModal({ isOpen, onClose, onCreateTask }: CreateTaskModalProps
   const handleClose = () => {
     setTitle('')
     setDescription('')
-    setStatus('todo')
+    const currentUser = getCurrentUser()
+    if (currentUser && currentUser.status && currentUser.status.length > 0) {
+      setStatus(currentUser.status[0].name)
+    } else {
+      setStatus('')
+    }
     onClose()
   }
 
@@ -142,40 +181,102 @@ function CreateTaskModal({ isOpen, onClose, onCreateTask }: CreateTaskModalProps
               <Label htmlFor="task-status" className="font-primary text-sm font-[400] text-foreground">
                 {t('dashboard.status')}
               </Label>
-              <div className="relative w-full h-[36px] opacity-100">
-                <select
-                  id="task-status"
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                  className={cn(
+              <div className="relative w-full h-[36px] opacity-100" ref={statusDropdownRef}>
+                {statuses.length === 0 ? (
+                  <div className={cn(
                     'w-full h-full rounded-md bg-background',
                     'px-3 py-2',
-                    isRTL ? 'pr-4' : 'pl-4',
-                    'flex justify-between items-center',
+                    'flex items-center',
                     'font-primary text-sm font-normal leading-[160%] tracking-[0%] opacity-100',
-                    'text-foreground',
+                    'text-muted-foreground',
                     'border border-input dark:border-white',
-                    'shadow-[0px_1px_2px_0px_hsla(0,0%,0%,0.05)]',
-                    'ring-offset-background',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-                    'disabled:cursor-not-allowed disabled:opacity-50',
-                    'appearance-none cursor-pointer'
-                  )}
-                >
-                  <option value="todo">To Do</option>
-                  {statuses.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.name}
-                    </option>
-                  ))}
-                </select>
-                <ChevronDown 
-                  className={cn(
-                    'absolute top-1/2 -translate-y-1/2 opacity-100 pointer-events-none text-muted-foreground',
-                    isRTL ? 'left-4' : 'right-4'
-                  )}
-                  style={{ width: '16px', height: '16px' }}
-                />
+                    'shadow-[0px_1px_2px_0px_hsla(0,0%,0%,0.05)]'
+                  )}>
+                    {t('dashboard.noStatusAvailable') || 'No status available'}
+                  </div>
+                ) : (
+                  <>
+                    {/* Custom Select Button */}
+                    <button
+                      type="button"
+                      onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
+                      className={cn(
+                        'w-full h-full rounded-md bg-background',
+                        'px-3 py-2',
+                        // isRTL ? '' : '',
+                        'flex justify-between items-center',
+                        'font-primary text-sm font-normal leading-[160%] tracking-[0%] opacity-100',
+                        'text-foreground',
+                        'border border-input dark:border-white',
+                        'shadow-[0px_1px_2px_0px_hsla(0,0%,0%,0.05)]',
+                        'ring-offset-background',
+                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                        'disabled:cursor-not-allowed disabled:opacity-50',
+                        'cursor-pointer'
+                      )}
+                    >
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        {status && (() => {
+                          const selectedStatus = statuses.find((s) => s.name === status)
+                          return selectedStatus ? (
+                            <>
+                              <div
+                                className="w-3 h-3 rounded-sm flex-shrink-0"
+                                style={{ backgroundColor: selectedStatus.color }}
+                              />
+                              <span className="truncate">{selectedStatus.name}</span>
+                            </>
+                          ) : (
+                            <span className="truncate">{status}</span>
+                          )
+                        })()}
+                      </div>
+                      <ChevronDown 
+                        className={cn(
+                          'opacity-100 text-muted-foreground flex-shrink-0',
+                          isStatusDropdownOpen && 'rotate-180',
+                          'transition-transform'
+                        )}
+                        style={{ width: '16px', height: '16px' }}
+                      />
+                    </button>
+
+                    {/* Dropdown Options */}
+                    {isStatusDropdownOpen && (
+                      <div
+                        className={cn(
+                          'absolute z-50 w-full mt-1 rounded-md bg-background border border-input dark:border-white',
+                          'shadow-[0px_4px_6px_-2px_hsla(0,0%,0%,0.05),0px_10px_15px_-3px_hsla(0,0%,0%,0.1)]',
+                          'max-h-[200px] overflow-auto'
+                        )}
+                      >
+                        {statuses.map((s) => (
+                          <button
+                            key={s.id}
+                            type="button"
+                            onClick={() => {
+                              setStatus(s.name)
+                              setIsStatusDropdownOpen(false)
+                            }}
+                            className={cn(
+                              'w-full px-3 py-2 flex items-center gap-2',
+                              'font-primary text-sm font-normal leading-[160%] tracking-[0%]',
+                              'text-foreground hover:bg-muted',
+                              'transition-colors',
+                              status === s.name && 'bg-muted'
+                            )}
+                          >
+                            <div
+                              className="w-3 h-3 rounded-sm flex-shrink-0"
+                              style={{ backgroundColor: s.color }}
+                            />
+                            <span className="text-left">{s.name}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -184,9 +285,10 @@ function CreateTaskModal({ isOpen, onClose, onCreateTask }: CreateTaskModalProps
         {/* Create Button */}
         <Button
           onClick={handleCreate}
-          className="w-full h-10 bg-primary text-primary-foreground hover:bg-primary/90 font-primary text-sm font-[700]"
+          disabled={isLoading}
+          className="w-full h-10 bg-primary text-primary-foreground hover:bg-primary/90 font-primary text-sm font-[700] disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {t('dashboard.create')}
+          {isLoading ? t('dashboard.creating') || 'Creating...' : t('dashboard.create')}
         </Button>
       </div>
     </Modal>

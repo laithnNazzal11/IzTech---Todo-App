@@ -4,7 +4,11 @@ import { Button } from '@/components/ui/button'
 import { useTranslation } from 'react-i18next'
 import StatusPopover from './popovers/StatusPopover'
 
-function StatusFilter() {
+interface StatusFilterProps {
+  onCreateStatus?: (status: { title: string; color: string }) => void
+}
+
+function StatusFilter({ onCreateStatus }: StatusFilterProps) {
   const { t } = useTranslation()
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -33,6 +37,7 @@ function StatusFilter() {
         isOpen={isPopoverOpen}
         onClose={() => setIsPopoverOpen(false)}
         triggerRef={buttonRef as React.RefObject<HTMLElement | null>}
+        onCreateStatus={onCreateStatus}
       />
     </div>
   )

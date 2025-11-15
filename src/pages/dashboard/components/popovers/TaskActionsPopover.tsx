@@ -1,8 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Zap } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useTranslation } from 'react-i18next'
+import { getCurrentUser } from '@/utils/auth'
+import { cn } from '@/lib/utils'
+import type { Status } from '@/types'
 import Popover from './Popover'
 import DeleteStatusModal from '../modals/DeleteStatusModal'
 
@@ -15,12 +18,6 @@ interface TaskActionsPopoverProps {
   onDelete?: () => void
   taskStatus?: string
 }
-
-// Available statuses with their colors
-const availableStatuses = [
-  { name: 'Do It', color: '#6A66E0' },
-  { name: 'Done', color: '#E01F3C' },
-]
 
 function TaskActionsPopover({
   isOpen,
@@ -35,6 +32,17 @@ function TaskActionsPopover({
   const { language } = useLanguage()
   const { t } = useTranslation()
   const [isDeleteStatusModalOpen, setIsDeleteStatusModalOpen] = useState(false)
+  const [statuses, setStatuses] = useState<Status[]>([])
+
+  useEffect(() => {
+    // Load statuses from current user
+    const currentUser = getCurrentUser()
+    if (currentUser && currentUser.status && currentUser.status.length > 0) {
+      setStatuses(currentUser.status)
+    } else {
+      setStatuses([])
+    }
+  }, [isOpen]) // Reload when popover opens
 
   const handleStatusClick = (status: string) => {
     onStatusChange?.(status)
@@ -60,6 +68,19 @@ function TaskActionsPopover({
     setIsDeleteStatusModalOpen(false)
   }
 
+  // Calculate height based on number of statuses
+  // Base height: header (20px) + padding (8px) + divider (8px) + Edit (28px) + divider (8px) + Delete (28px) + padding (8px) = 108px
+  // Each status item: ~28px
+  // Header section: ~28px
+  const baseHeight = 108
+  const statusHeaderHeight = 28
+  const statusItemHeight = 28
+  const maxStatusHeight = statusItemHeight * 4 // Max 4 statuses visible
+  const statusSectionHeight = statuses.length > 0 
+    ? Math.min(statusHeaderHeight + (statusItemHeight * statuses.length), statusHeaderHeight + maxStatusHeight)
+    : statusHeaderHeight + 28 // Empty state height
+  const totalHeight = baseHeight + statusSectionHeight
+
   return (
     <>
     <Popover
@@ -67,12 +88,12 @@ function TaskActionsPopover({
       onClose={onClose}
       triggerRef={triggerRef}
       width={210}
-      height={172}
+      height={totalHeight}
     >
-      <div className="flex flex-col h-full overflow-hidden">
+      <div className="flex flex-col overflow-hidden">
         {/* First Box - Change to Section */}
-        <div className="opacity-100 overflow-hidden w-full max-w-[210px] h-[84px] pr-1 pl-1">
-          <div className="flex flex-col h-full gap-2 py-1">
+        <div className="opacity-100 w-full max-w-[210px] pr-1 pl-1">
+          <div className="flex flex-col gap-2 py-1">
             {/* Change to Header */}
             <div className="flex items-center opacity-100 pr-1.5 pl-1.5">
               <Zap
@@ -87,23 +108,36 @@ function TaskActionsPopover({
             </div>
 
             {/* Status Options */}
-            {availableStatuses.map((status) => (
-              <button
-                key={status.name}
-                onClick={() => handleStatusClick(status.name)}
-                className="flex items-center hover:bg-muted transition-colors opacity-100"
-              >
-                <div
-                  className="rounded-sm opacity-100 w-4 h-4 mx-2"
-                  style={{
-                    backgroundColor: status.color,
-                  }}
-                />
-                <span className={`font-primary text-sm ${theme === 'dark' ? 'text-white' : 'text-foreground'}`}>
-                  {status.name}
-                </span>
-              </button>
-            ))}
+            <div className={cn(
+              "flex flex-col gap-2",
+              statuses.length > 4 && "max-h-[112px] overflow-y-auto"
+            )}>
+              {statuses.length === 0 ? (
+                <div className="flex items-center justify-center py-2">
+                  <span className={`font-primary text-sm ${theme === 'dark' ? 'text-white' : 'text-foreground'}`}>
+                    {t('dashboard.noStatusAvailable') || 'No status available'}
+                  </span>
+                </div>
+              ) : (
+                statuses.map((status) => (
+                  <button
+                    key={status.id}
+                    onClick={() => handleStatusClick(status.name)}
+                    className="flex items-center hover:bg-muted transition-colors opacity-100"
+                  >
+                    <div
+                      className="rounded-sm opacity-100 w-4 h-4 mx-2"
+                      style={{
+                        backgroundColor: status.color,
+                      }}
+                    />
+                    <span className={`font-primary text-sm ${theme === 'dark' ? 'text-white' : 'text-foreground'}`}>
+                      {status.name}
+                    </span>
+                  </button>
+                ))
+              )}
+            </div>
           </div>
         </div>
 
