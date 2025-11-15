@@ -49,6 +49,7 @@
     "taskTitlePlaceholder": "اقتل الرئيس",
     "descriptionPlaceholder": "اكتب شيئاً...",
     "create": "إنشاء",
+  "creating": "جاري الإنشاء...",
     "creating": "جاري الإنشاء...",
     "createStatus": "إنشاء حالة",
     "statusTitle": "عنوان الحالة",

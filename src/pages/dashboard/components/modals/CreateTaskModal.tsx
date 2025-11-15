@@ -296,7 +296,7 @@ function CreateTaskModal({ isOpen, onClose, onCreateTask, isLoading = false }: C
           {isLoading ? (
             <div className="flex items-center justify-center gap-2">
               <Loader2 className="h-4 w-4 animate-spin" />
-              <span>{t('dashboard.creating') || 'Creating...'}</span>
+              <span>{t('dashboard.creating', { defaultValue: 'Creating...' })}</span>
             </div>
           ) : (
             t('dashboard.create')

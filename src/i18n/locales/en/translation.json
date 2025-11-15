@@ -49,6 +49,7 @@
     "taskTitlePlaceholder": "Kill the Boss",
     "descriptionPlaceholder": "Type somthing...",
     "create": "Create",
+   "creating": "Creating...",
     "createStatus": "Create Status",
     "statusTitle": "Status title",
     "statusTitlePlaceholder": "Done",
