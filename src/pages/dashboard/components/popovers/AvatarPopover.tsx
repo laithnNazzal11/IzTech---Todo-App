@@ -3,7 +3,7 @@ import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import { storage, STORAGE_KEYS } from '@/utils/storage'
+import { logout } from '@/utils/auth'
 import Popover from './Popover'
 
 interface AvatarPopoverProps {
@@ -24,8 +24,9 @@ function AvatarPopover({ isOpen, onClose, triggerRef }: AvatarPopoverProps) {
   }
 
   const handleExit = () => {
-    storage.remove(STORAGE_KEYS.CURRENT_USER)
-    navigate('/signin')
+    logout()
+    navigate('/signin', { replace: true })
+    onClose()
   }
 
   return (

@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { isAuth } from '@/utils/auth'
 import { Button } from '@/components/ui/button'
 import DashboardHeader from './components/DashboardHeader'
 import DashboardContent from './components/DashboardContent'
@@ -34,10 +36,18 @@ function Dashboard() {
   const { t } = useTranslation()
   const { toggleTheme } = useTheme()
   const { language, changeLanguage } = useLanguage()
+  const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(1)
   const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false)
   const itemsPerPage = 7
   const totalItems = 120
+
+  useEffect(() => {
+    // Redirect to signin if not authenticated
+    if (!isAuth()) {
+      navigate('/signin', { replace: true })
+    }
+  }, [])
 
   const handleLanguageToggle = () => {
     changeLanguage(language === 'en' ? 'ar' : 'en')
@@ -60,7 +70,6 @@ function Dashboard() {
 
   const handleCreateTask = (task: { title: string; description: string; status: string }) => {
     // TODO: Implement task creation logic
-    console.log('Create task:', task)
   }
 
   return (

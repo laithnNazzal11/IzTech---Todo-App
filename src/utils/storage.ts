@@ -1,5 +1,5 @@
 const STORAGE_KEYS = {
-  USERS: 'todo_app_users',
+  USERS: 'users',
   CURRENT_USER: 'todo_app_current_user',
   TASKS: 'todo_app_tasks',
   THEME: 'todo_app_theme',
@@ -10,7 +10,17 @@ export const storage = {
   get: <T>(key: string): T | null => {
     try {
       const item = localStorage.getItem(key)
-      return item ? JSON.parse(item) : null
+      if (item === null) {
+        return null
+      }
+      // Try to parse as JSON first
+      try {
+        return JSON.parse(item) as T
+      } catch {
+        // If parsing fails, return the raw string value
+        // This handles cases where data was stored as plain string
+        return item as T
+      }
     } catch {
       return null
     }

@@ -5,14 +5,23 @@ import { Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/hooks/useAuth";
 
 function SignUpForm() {
   const { t } = useTranslation();
+  const { signUp, isLoading, error, clearError } = useAuth();
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setAvatarFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setAvatarPreview(reader.result as string);
@@ -26,6 +35,37 @@ function SignUpForm() {
     input?.click();
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    // Clear error when user starts typing
+    if (error) {
+      clearError();
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    clearError();
+
+    try {
+      await signUp(
+        {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        },
+        avatarFile || undefined
+      );
+    } catch (err) {
+      // Error is handled by the hook and displayed via error state
+      console.error('Signup error:', err);
+    }
+  };
+
   return (
     <div className="flex w-[640px] max-w-[640px] md:w-[360px] md:max-w-[360px] flex-col  sm:gap-[24px] md:gap-8 rounded-lg p-6 md:rounded-none md:border-0 sm:bg-transparent md:p-0">
       <div className="flex w-full h-[116px] sm:h-[92px] flex-col gap-[12px] text-center">
@@ -37,7 +77,7 @@ function SignUpForm() {
         </p>
       </div>
 
-      <form className="flex w-full flex-col md:gap-4 gap-4">
+      <form className="flex w-full flex-col md:gap-4 gap-4" onSubmit={handleSubmit}>
         {/* Avatar Upload Section */}
         <div className="flex flex-col items-center  gap-[24px] sm:gap-4 sm:flex-row md:items-center md:justify-start md:pb-[16px] sm:h-[88px]">
           <div className="relative flex-shrink-0">
@@ -83,6 +123,15 @@ function SignUpForm() {
           </div>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="flex flex-col gap-2 p-3 rounded-md bg-destructive/10 border border-destructive/20">
+            <p className="font-primary text-sm font-[400] text-destructive">
+              {error}
+            </p>
+          </div>
+        )}
+
         {/* Form Fields */}
         <div className="flex flex-col gap-2">
           <Label htmlFor="name">{t("auth.name")}</Label>
@@ -90,7 +139,11 @@ function SignUpForm() {
             id="name"
             type="text"
             name="name"
+            value={formData.name}
+            onChange={handleInputChange}
             placeholder={t("auth.name")}
+            required
+            disabled={isLoading}
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -99,7 +152,11 @@ function SignUpForm() {
             id="email"
             type="email"
             name="email"
+            value={formData.email}
+            onChange={handleInputChange}
             placeholder={t("auth.email")}
+            required
+            disabled={isLoading}
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -108,7 +165,12 @@ function SignUpForm() {
             id="password"
             type="password"
             name="password"
+            value={formData.password}
+            onChange={handleInputChange}
             placeholder={t("auth.password")}
+            required
+            disabled={isLoading}
+            minLength={8}
           />
           <p className="font-primary text-[12px] font-[400] leading-[16px] tracking-[0] text-muted-foreground">
             {t("auth.passwordHint")}
@@ -117,8 +179,12 @@ function SignUpForm() {
 
         {/* Submit Button and Footer */}
         <div className="flex flex-col sm:gap-4 md:gap-4 lg:gap-4 gap-[40px]">
-          <Button className="sm:mt-4 mt-0 h-[36px] w-full rounded-md py-[6px] px-[3px] bg-primary text-primary-foreground hover:bg-primary/90">
-            {t("auth.signUpCta")}
+          <Button 
+            type="submit"
+            className="sm:mt-4 mt-0 h-[36px] w-full rounded-md py-[6px] px-[3px] bg-primary text-primary-foreground hover:bg-primary/90"
+            disabled={isLoading}
+          >
+            {isLoading ? t("auth.signingUp") || "Signing up..." : t("auth.signUpCta")}
           </Button>
           <p className="flex h-[22px] w-full items-center justify-center gap-1 text-center opacity-100">
             <span className="font-primary text-[14px] font-[400] leading-[160%] tracking-[0] text-muted-foreground">

@@ -1,5 +1,8 @@
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { isAuth } from '@/utils/auth'
 import type { ReactNode } from 'react'
 import PromoPanel from './PromoPanel'
 import AuthHeader from './AuthHeader'
@@ -12,10 +15,20 @@ interface AuthLayoutProps {
 function AuthLayout({ children }: AuthLayoutProps) {
   const { theme, toggleTheme } = useTheme()
   const { language, changeLanguage } = useLanguage()
+  const navigate = useNavigate()
+
+
+  useEffect(() => {
+    // Redirect to dashboard if already authenticated
+    if (isAuth()) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [])
 
   const handleLanguageToggle = () => {
     changeLanguage(language === 'en' ? 'ar' : 'en')
   }
+  
 
   return (
     <section className="flex min-h-screen w-full justify-center bg-background text-foreground">

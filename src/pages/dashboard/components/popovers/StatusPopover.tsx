@@ -40,7 +40,6 @@ function StatusPopover({ isOpen, onClose, triggerRef }: StatusPopoverProps) {
 
   const handleCreateStatus = (status: { title: string; color: string }) => {
     // TODO: Implement actual status creation logic
-    console.log('Creating status:', status)
     setIsCreateStatusModalOpen(false)
   }
 

@@ -1,9 +1,17 @@
 export interface User {
-  id: string
+  name: string
   email: string
   password: string
   avatar?: string
-  createdAt: string
+  tasks: Task[]
+  status: Status[]
+}
+
+export interface Status {
+  id: string
+  name: string
+  color: string
+  userId: string
 }
 
 export interface Task {
