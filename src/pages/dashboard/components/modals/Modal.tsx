@@ -34,9 +34,12 @@ function Modal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         className={cn(
-          // Ensure always centered on sm and above, bottom on small screens
-          'left-[50%] translate-x-[-50%] translate-y-[0%] bottom-0 sm:bottom-auto sm:top-[50%] sm:translate-y-[-50%]',
+          // Ensure always centered on sm and above, bottom on small screens with space for dropdowns
+          // Use flex-end alignment on small screens, center on larger screens
+          'items-end sm:items-center',
           !isAutoSize && 'p-0 overflow-hidden',
+          // Allow overflow for select dropdowns in auto-size modals
+          isAutoSize && 'overflow-visible',
           !isAutoSize && (theme === 'dark' 
             ? 'bg-[hsla(4,67%,7%,1)] border-[hsla(0,0%,16%,1)]' 
             : 'bg-white border-[hsla(200,33%,98%,1)]'),
@@ -53,15 +56,12 @@ function Modal({
           maxWidth: '90vw',
           maxHeight: '90vw',
           justifyContent: 'center',
-          alignItems: 'center',
           display: 'flex',
         } : {
           width: '100vh',
           justifyContent: 'center',
-          alignItems: 'center',
-          height: 'fit-content',
+          height: '100%',
           maxWidth: '100vw',
-          maxHeight: '90vw',
           display: 'flex',
         }}
         onInteractOutside={(e) => {
