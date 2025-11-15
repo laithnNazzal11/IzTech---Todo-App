@@ -5,10 +5,11 @@ import { useTranslation } from 'react-i18next'
 import StatusPopover from './popovers/StatusPopover'
 
 interface StatusFilterProps {
-  onCreateStatus?: (status: { title: string; color: string }) => void
+  onCreateStatus?: (status: { title: string; color: string }) => void | Promise<void>
+  isLoading?: boolean
 }
 
-function StatusFilter({ onCreateStatus }: StatusFilterProps) {
+function StatusFilter({ onCreateStatus, isLoading = false }: StatusFilterProps) {
   const { t } = useTranslation()
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -38,6 +39,7 @@ function StatusFilter({ onCreateStatus }: StatusFilterProps) {
         onClose={() => setIsPopoverOpen(false)}
         triggerRef={buttonRef as React.RefObject<HTMLElement | null>}
         onCreateStatus={onCreateStatus}
+        isLoading={isLoading}
       />
     </div>
   )

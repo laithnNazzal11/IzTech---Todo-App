@@ -68,19 +68,6 @@ function TaskActionsPopover({
     setIsDeleteStatusModalOpen(false)
   }
 
-  // Calculate height based on number of statuses
-  // Base height: header (20px) + padding (8px) + divider (8px) + Edit (28px) + divider (8px) + Delete (28px) + padding (8px) = 108px
-  // Each status item: ~28px
-  // Header section: ~28px
-  const baseHeight = 108
-  const statusHeaderHeight = 28
-  const statusItemHeight = 28
-  const maxStatusHeight = statusItemHeight * 4 // Max 4 statuses visible
-  const statusSectionHeight = statuses.length > 0 
-    ? Math.min(statusHeaderHeight + (statusItemHeight * statuses.length), statusHeaderHeight + maxStatusHeight)
-    : statusHeaderHeight + 28 // Empty state height
-  const totalHeight = baseHeight + statusSectionHeight
-
   return (
     <>
     <Popover
@@ -88,7 +75,6 @@ function TaskActionsPopover({
       onClose={onClose}
       triggerRef={triggerRef}
       width={210}
-      height={totalHeight}
     >
       <div className="flex flex-col overflow-hidden">
         {/* First Box - Change to Section */}

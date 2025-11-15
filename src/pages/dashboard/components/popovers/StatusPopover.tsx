@@ -18,10 +18,11 @@ interface StatusPopoverProps {
   isOpen: boolean
   onClose: () => void
   triggerRef: React.RefObject<HTMLElement | null>
-  onCreateStatus?: (status: { title: string; color: string }) => void
+  onCreateStatus?: (status: { title: string; color: string }) => void | Promise<void>
+  isLoading?: boolean
 }
 
-function StatusPopover({ isOpen, onClose, triggerRef, onCreateStatus }: StatusPopoverProps) {
+function StatusPopover({ isOpen, onClose, triggerRef, onCreateStatus, isLoading = false }: StatusPopoverProps) {
   const { theme } = useTheme()
   const { t } = useTranslation()
   const [isCreateStatusModalOpen, setIsCreateStatusModalOpen] = useState(false)
@@ -74,24 +75,24 @@ function StatusPopover({ isOpen, onClose, triggerRef, onCreateStatus }: StatusPo
   }
 
   const handleCloseCreateStatusModal = () => {
+    // Prevent closing during loading
+    if (isLoading) return
     setIsCreateStatusModalOpen(false)
   }
 
-  const handleCreateStatus = (status: { title: string; color: string }) => {
-    onCreateStatus?.(status)
-    setIsCreateStatusModalOpen(false)
+  const handleCreateStatus = async (status: { title: string; color: string }) => {
+    try {
+      await onCreateStatus?.(status)
+      // Only close modal after successful creation
+      setIsCreateStatusModalOpen(false)
+    } catch (error) {
+      // Handle error if needed
+      console.error("Error creating status:", error)
+    }
   }
 
   // Calculate height based on number of statuses
-  // Base height: divider (8px) + Create New Status button (28px) + padding (8px) = 44px
-  // Each status item: ~28px
-  const baseHeight = 44
-  const statusItemHeight = 28
-  const maxStatusHeight = statusItemHeight * 4 // Max 4 statuses visible
-  const statusSectionHeight = statusesWithCount.length > 0
-    ? Math.min(statusItemHeight * statusesWithCount.length, maxStatusHeight)
-    : 28 // Empty state height
-  const totalHeight = baseHeight + statusSectionHeight
+
 
   return (
     <>
@@ -100,7 +101,6 @@ function StatusPopover({ isOpen, onClose, triggerRef, onCreateStatus }: StatusPo
       onClose={onClose}
       triggerRef={triggerRef}
       width={210}
-      height={totalHeight}
     >
       <div className="flex flex-col overflow-hidden">
         {/* Top Box - Status List */}
@@ -110,10 +110,10 @@ function StatusPopover({ isOpen, onClose, triggerRef, onCreateStatus }: StatusPo
             statusesWithCount.length > 4 && "max-h-[112px] overflow-y-auto"
           )}>
             {statusesWithCount.length === 0 ? (
-              <div className="flex items-center justify-center gap-2 py-2">
+              <div className="flex items-center gap-2 py-2 pr-1 pl-1">
                 <FileX className={`h-4 w-4 ${theme === 'dark' ? 'text-white' : 'text-foreground'}`} />
                 <span className={`font-primary text-sm ${theme === 'dark' ? 'text-white' : 'text-foreground'}`}>
-                  there is no taks yet
+                  there is no tasks yet
                 </span>
               </div>
             ) : (
@@ -194,6 +194,7 @@ function StatusPopover({ isOpen, onClose, triggerRef, onCreateStatus }: StatusPo
       isOpen={isCreateStatusModalOpen}
       onClose={handleCloseCreateStatusModal}
       onCreateStatus={handleCreateStatus}
+      isLoading={isLoading}
     />
     </>
   )

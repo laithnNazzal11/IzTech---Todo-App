@@ -43,25 +43,32 @@ function CreateStatusModal({
 
   const handleCreate = async () => {
     if (title.trim() && !isLoading) {
-      await onCreateStatus?.({
-        title: title.trim(),
-        color: selectedColor,
-      });
-      // Reset form
-      setTitle("");
-      setSelectedColor(colorPalette[0]);
-      onClose();
+      try {
+        await onCreateStatus?.({
+          title: title.trim(),
+          color: selectedColor,
+        });
+        // Reset form only after successful creation
+        setTitle("");
+        setSelectedColor(colorPalette[0]);
+        onClose();
+      } catch (error) {
+        // Handle error if needed
+        console.error("Error creating status:", error);
+      }
     }
   };
 
   const handleClose = () => {
+    // Prevent closing during loading
+    if (isLoading) return;
     setTitle("");
     setSelectedColor(colorPalette[0]);
     onClose();
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} width="auto" height="auto">
+    <Modal isOpen={isOpen} onClose={handleClose} width="auto" height="auto" isLoading={isLoading}>
       <div
         className={cn(
           "flex flex-col opacity-100 relative",
@@ -81,8 +88,9 @@ function CreateStatusModal({
         {/* Close Button - Fixed Position */}
         <button
           onClick={handleClose}
+          disabled={isLoading}
           className={cn(
-            "absolute top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none z-10",
+            "absolute top-6 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 z-10",
             isRTL ? "left-6" : "right-6"
           )}
         >
@@ -105,12 +113,14 @@ function CreateStatusModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder={t("dashboard.statusTitlePlaceholder")}
+              disabled={isLoading}
               className={cn(
                 "font-primary text-sm",
                 "text-foreground",
                 "placeholder:text-muted-foreground",
                 "py-2",
-                !isRTL && "px-3"
+                !isRTL && "px-3",
+                isLoading && "cursor-not-allowed opacity-50"
               )}
             />
           </div>
@@ -136,8 +146,10 @@ function CreateStatusModal({
                 >
                   <button
                     onClick={() => setSelectedColor(color)}
+                    disabled={isLoading}
                     className={cn(
-                      "flex-shrink-0 w-[30px] h-[30px] cursor-pointer transition-all opacity-100 rounded-[6px]"
+                      "flex-shrink-0 w-[30px] h-[30px] cursor-pointer transition-all opacity-100 rounded-[6px]",
+                      isLoading && "cursor-not-allowed opacity-50"
                     )}
                     style={{
                       backgroundColor: color,

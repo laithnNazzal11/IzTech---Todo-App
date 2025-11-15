@@ -200,7 +200,7 @@ function Dashboard() {
               {/* Search and Filter */}
               <div className="flex flex-col sm:flex-row gap-4">
                 <SearchBar />
-                <StatusFilter onCreateStatus={handleCreateStatus} />
+                <StatusFilter onCreateStatus={handleCreateStatus} isLoading={isCreatingStatus} />
               </div>
 
               {/* Task Table or Empty State */}

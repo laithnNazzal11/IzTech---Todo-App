@@ -16,7 +16,9 @@
     "passwordHint": "الحد الأدنى 8 أحرف.",
     "upload": "رفع",
     "confirmPassword": "تأكيد كلمة المرور",
+    "signIn": "تسجيل الدخول",
     "signInCta": "تسجيل الدخول",
+    "signUp": "إنشاء حساب",
     "signUpCta": "إنشاء حساب",
     "signUpPrompt": "ليس لديك حساب؟",
     "signUpLink": "أنشئ حساباً",
@@ -24,6 +26,7 @@
     "signInLink": "تسجيل الدخول",
     "signInError": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
     "signingIn": "جاري تسجيل الدخول...",
+    "signingUp": "جاري إنشاء الحساب...",
     "promoTitle": "قائمة المهام المسكونة",
     "promoSubtitle": "مهام لن تبقى مدفونة!"
   },

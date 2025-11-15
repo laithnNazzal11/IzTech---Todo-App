@@ -13,6 +13,7 @@ interface ModalProps {
   width?: number | string
   height?: number | string
   showBackdrop?: boolean
+  isLoading?: boolean
 }
 
 function Modal({ 
@@ -21,7 +22,8 @@ function Modal({
   children, 
   width = 400, 
   height = 'auto',
-  showBackdrop = true 
+  showBackdrop = true,
+  isLoading = false
 }: ModalProps) {
   const { theme } = useTheme()
 
@@ -31,7 +33,7 @@ function Modal({
   const isAutoSize = width === 'auto' && height === 'auto'
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && !isLoading && onClose()}>
       <DialogContent
         className={cn(
 
@@ -64,8 +66,8 @@ function Modal({
         }}
         onOpenAutoFocus={(e) => e.preventDefault()}
         onInteractOutside={(e) => {
-          // Prevent closing only when showBackdrop is false
-          if (!showBackdrop) {
+          // Prevent closing when loading or when showBackdrop is false
+          if (isLoading || !showBackdrop) {
             e.preventDefault()
           }
         }}

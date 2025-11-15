@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { Upload } from "lucide-react";
+import { Upload, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
+import { cn } from "@/lib/utils";
 
 function SignUpForm() {
   const { t } = useTranslation();
@@ -124,6 +125,7 @@ function SignUpForm() {
               type="file"
               accept="image/*"
               onChange={handleAvatarChange}
+              disabled={isLoading}
               className="hidden w-full"
  
             />
@@ -132,7 +134,11 @@ function SignUpForm() {
               variant="outline"
               size="default"
               onClick={handleUploadClick}
-              className="w-full h-[36px] py-2 px-1 gap-2 rounded-md border border-border dark:border-white opacity-100"
+              disabled={isLoading}
+              className={cn(
+                "w-full h-[36px] py-2 px-1 gap-2 rounded-md border border-border dark:border-white opacity-100",
+                isLoading && "cursor-not-allowed opacity-50"
+              )}
             >
               <Upload className="h-4 w-4 opacity-100" style={{ width: '16px', height: '16px' }} />
               <span 
@@ -175,6 +181,7 @@ function SignUpForm() {
             placeholder={t("auth.name")}
             required
             disabled={isLoading}
+            className={cn(isLoading && "cursor-not-allowed opacity-50")}
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -188,6 +195,7 @@ function SignUpForm() {
             placeholder={t("auth.email")}
             required
             disabled={isLoading}
+            className={cn(isLoading && "cursor-not-allowed opacity-50")}
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -202,6 +210,7 @@ function SignUpForm() {
             required
             disabled={isLoading}
             minLength={8}
+            className={cn(isLoading && "cursor-not-allowed opacity-50")}
           />
           <p className="font-primary text-[12px] font-[400] leading-[16px] tracking-[0] text-muted-foreground">
             {t("auth.passwordHint")}
@@ -212,10 +221,22 @@ function SignUpForm() {
         <div className="flex flex-col sm:gap-4 md:gap-4 lg:gap-4 gap-[40px]">
           <Button 
             type="submit"
-            className="sm:mt-4 mt-0 h-[36px] w-full rounded-md py-[6px] px-[3px] bg-primary text-primary-foreground hover:bg-primary/90"
             disabled={isLoading}
+            className={cn(
+              "sm:mt-4 mt-0 h-[36px] w-full rounded-md py-[6px] px-[3px] font-primary text-sm font-[700] transition-all",
+              isLoading
+                ? "bg-primary/70 text-primary-foreground cursor-wait"
+                : "bg-primary text-primary-foreground hover:bg-primary/90"
+            )}
           >
-            {isLoading ? t("auth.signingUp") || "Signing up..." : t("auth.signUpCta")}
+            {isLoading ? (
+              <div className="flex items-center justify-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>{t("auth.signingUp")}</span>
+              </div>
+            ) : (
+              t("auth.signUp")
+            )}
           </Button>
           <p className="flex h-[22px] w-full items-center justify-center gap-1 text-center opacity-100">
             <span className="font-primary text-[14px] font-[400] leading-[160%] tracking-[0] text-muted-foreground">

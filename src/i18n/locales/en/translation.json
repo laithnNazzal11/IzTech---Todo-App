@@ -16,7 +16,9 @@
     "passwordHint": "Minimum 8 characters.",
     "upload": "Upload",
     "confirmPassword": "Confirm Password",
+    "signIn": "Sign in",
     "signInCta": "Sign in",
+    "signUp": "Sign up",
     "signUpCta": "Sign up",
     "signUpPrompt": "Don't have an account?",
     "signUpLink": "Sign up",
@@ -24,6 +26,7 @@
     "signInLink": "Sign in",
     "signInError": "Email or password is incorrect",
     "signingIn": "Signing in...",
+    "signingUp": "Signing up...",
     "promoTitle": "The Haunted ToDo List",
     "promoSubtitle": "Tasks That Won't Stay Buried!"
   },

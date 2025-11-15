@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
+import { cn } from "@/lib/utils";
 
 function SignInForm() {
   const { t } = useTranslation();
@@ -73,6 +75,7 @@ function SignInForm() {
             placeholder={t("auth.email")}
             required
             disabled={isLoading}
+            className={cn(isLoading && "cursor-not-allowed opacity-50")}
           />
         </div>
         <div className="flex flex-col gap-2">
@@ -86,15 +89,28 @@ function SignInForm() {
             placeholder={t("auth.password")}
             required
             disabled={isLoading}
+            className={cn(isLoading && "cursor-not-allowed opacity-50")}
           />
         </div>
         <div className="flex flex-col sm:gap-4 md:gap-4 lg:gap-4 gap-[40px] ">
           <Button 
             type="submit"
-            className="sm:mt-4 mt-0 h-[36px] w-full rounded-md py-[6px] px-[3px] bg-primary text-primary-foreground hover:bg-primary/90"
             disabled={isLoading}
+            className={cn(
+              "sm:mt-4 mt-0 h-[36px] w-full rounded-md py-[6px] px-[3px] font-primary text-sm font-[700] transition-all",
+              isLoading
+                ? "bg-primary/70 text-primary-foreground cursor-wait"
+                : "bg-primary text-primary-foreground hover:bg-primary/90"
+            )}
           >
-            {isLoading ? t("auth.signingIn") || "Signing in..." : t("auth.signInCta")}
+            {isLoading ? (
+              <div className="flex items-center justify-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>{t("auth.signingIn") || "Signing in..."}</span>
+              </div>
+            ) : (
+              t("auth.signIn")
+            )}
           </Button>
           <p className="flex h-[22px] w-full items-center justify-center gap-1 text-center opacity-100">
             <span className="font-primary text-[14px] font-[700] leading-[160%] tracking-[0] text-muted-foreground">
