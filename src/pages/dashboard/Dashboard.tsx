@@ -22,7 +22,7 @@ import EmptyState from './components/EmptyState'
 
 function Dashboard() {
   const { t } = useTranslation()
-  const { toggleTheme } = useTheme()
+  const { theme, toggleTheme } = useTheme()
   const { language, changeLanguage } = useLanguage()
   const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(1)
@@ -212,12 +212,17 @@ function Dashboard() {
               ) : (
                 <>
                   {/* Task Table */}
-                  <div className="flex-1 overflow-auto mt-[24px] mb-4">
+                  <div className="mt-[24px] mb-4">
                     <TaskTable tasks={tasks} />
                   </div>
 
                   {/* Pagination */}
-                  <div className="flex-shrink-0 pb-4">
+                  <div className={cn(
+                    "flex-shrink-0 pb-4 pt-4 border-t",
+                    theme === 'dark' 
+                      ? 'border-t-[hsla(0,0%,16%,1)]' 
+                      : 'border-t-[hsla(200,33%,98%,1)]'
+                  )}>
                     <Pagination
                       currentPage={currentPage}
                       totalPages={totalPages}

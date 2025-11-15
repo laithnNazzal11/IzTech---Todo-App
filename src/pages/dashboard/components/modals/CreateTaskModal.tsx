@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ChevronDown, X } from 'lucide-react'
+import { ChevronDown, X, Loader2 } from 'lucide-react'
 import Modal from './Modal'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -286,9 +286,21 @@ function CreateTaskModal({ isOpen, onClose, onCreateTask, isLoading = false }: C
         <Button
           onClick={handleCreate}
           disabled={isLoading}
-          className="w-full h-10 bg-primary text-primary-foreground hover:bg-primary/90 font-primary text-sm font-[700] disabled:opacity-50 disabled:cursor-not-allowed"
+          className={cn(
+            "w-full h-10 font-primary text-sm font-[700] transition-all",
+            isLoading
+              ? "bg-primary/70 text-primary-foreground cursor-wait"
+              : "bg-primary text-primary-foreground hover:bg-primary/90"
+          )}
         >
-          {isLoading ? t('dashboard.creating') || 'Creating...' : t('dashboard.create')}
+          {isLoading ? (
+            <div className="flex items-center justify-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>{t('dashboard.creating') || 'Creating...'}</span>
+            </div>
+          ) : (
+            t('dashboard.create')
+          )}
         </Button>
       </div>
     </Modal>
