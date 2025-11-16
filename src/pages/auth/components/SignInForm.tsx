@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -44,15 +45,25 @@ function SignInForm() {
   };
 
   return (
-    <div className="flex h-[486px] w-[512px] max-w-[512px] md:h-[386px] md:w-[360px] md:max-w-[360px] flex-col gap-[40px] sm:gap-[56px] md:gap-8 rounded-lg p-6 md:rounded-none md:border-0 sm:bg-transparent md:p-0">
-      <div className="flex h-[124px] w-full flex-col gap-[12px] text-center">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className="flex h-[486px] w-[512px] max-w-[512px] md:h-[386px] md:w-[360px] md:max-w-[360px] flex-col gap-[40px] sm:gap-[56px] md:gap-8 rounded-lg p-6 md:rounded-none md:border-0 sm:bg-transparent md:p-0"
+    >
+      <motion.div 
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+        className="flex h-[124px] w-full flex-col gap-[12px] text-center"
+      >
         <h1 className="font-primary text-[32px] font-[700] leading-[40px] tracking-[0] text-center">
           {t("auth.signInTitle")}
         </h1>
         <p className="font-primary text-[16px] font-[400] leading-[32px] tracking-[0.01em] text-center text-muted-foreground">
           {t("auth.signInSubtitle")}
         </p>
-      </div>
+      </motion.div>
 
       <form
         className="flex w-full flex-col md:gap-4 sm:gap-[42px] gap-[40px]"
@@ -67,7 +78,12 @@ function SignInForm() {
           </div>
         )}
 
-        <div className="flex flex-col gap-2">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col gap-2"
+        >
           <Label htmlFor="email">{t("auth.email")}</Label>
           <Input
             id="email"
@@ -80,8 +96,13 @@ function SignInForm() {
             disabled={isLoading}
             className={cn(isLoading && "cursor-not-allowed opacity-50")}
           />
-        </div>
-        <div className="flex flex-col gap-2">
+        </motion.div>
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col gap-2"
+        >
           <Label htmlFor="password">{t("auth.password")}</Label>
           <Input
             id="password"
@@ -94,27 +115,37 @@ function SignInForm() {
             disabled={isLoading}
             className={cn(isLoading && "cursor-not-allowed opacity-50")}
           />
-        </div>
-        <div className="flex flex-col sm:gap-4 md:gap-4 lg:gap-4 gap-[40px] ">
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className={cn(
-              "sm:mt-4 mt-0 h-[36px] w-full rounded-md py-[6px] px-[3px] font-primary text-sm font-[700] transition-all",
-              isLoading
-                ? "bg-primary/70 text-primary-foreground cursor-wait"
-                : "bg-primary text-primary-foreground hover:bg-primary/90"
-            )}
+        </motion.div>
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col sm:gap-4 md:gap-4 lg:gap-4 gap-[40px] "
+        >
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
-            {isLoading ? (
-              <div className="flex items-center justify-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span>{t("auth.signingIn") || "Signing in..."}</span>
-              </div>
-            ) : (
-              t("auth.signIn")
-            )}
-          </Button>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className={cn(
+                "sm:mt-4 mt-0 h-[36px] w-full rounded-md py-[6px] px-[3px] font-primary text-sm font-[700] transition-all",
+                isLoading
+                  ? "bg-primary/70 text-primary-foreground cursor-wait"
+                  : "bg-primary text-primary-foreground hover:bg-primary/90"
+              )}
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>{t("auth.signingIn") || "Signing in..."}</span>
+                </div>
+              ) : (
+                t("auth.signIn")
+              )}
+            </Button>
+          </motion.div>
           <p className="flex h-[22px] w-full items-center justify-center gap-1 text-center opacity-100">
             <span className="font-primary text-[14px] font-[700] leading-[160%] tracking-[0] text-muted-foreground">
               {t("auth.signUpPrompt")}{" "}
@@ -126,9 +157,9 @@ function SignInForm() {
               {t("auth.signUpLink")}
             </Link>
           </p>
-        </div>
+        </motion.div>
       </form>
-    </div>
+    </motion.div>
   );
 }
 

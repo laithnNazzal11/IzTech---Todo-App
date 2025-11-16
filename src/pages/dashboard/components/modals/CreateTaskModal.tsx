@@ -34,6 +34,7 @@ function CreateTaskModal({ isOpen, onClose, onCreateTask, onUpdateTask, onDelete
   const [status, setStatus] = useState('')
   const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false)
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false)
+  const [titleError, setTitleError] = useState('')
   const statusDropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -53,6 +54,8 @@ function CreateTaskModal({ isOpen, onClose, onCreateTask, onUpdateTask, onDelete
       setStatuses([])
       setStatus('')
     }
+    // Clear error when modal opens
+    setTitleError('')
   }, [isOpen, isEdit, task]) // Reload when modal opens or edit mode/task changes
 
   // Close dropdown when clicking outside
@@ -73,7 +76,16 @@ function CreateTaskModal({ isOpen, onClose, onCreateTask, onUpdateTask, onDelete
   }, [isStatusDropdownOpen])
 
   const handleCreate = async () => {
-    if (title.trim() && status && !isLoading) {
+    // Validate title
+    if (!title.trim()) {
+      setTitleError(t('dashboard.taskTitleRequired') || 'Task title is required')
+      return
+    }
+
+    // Clear error if validation passes
+    setTitleError('')
+
+    if (status && !isLoading) {
       if (isEdit && task) {
         await onUpdateTask?.(task.id, {
           title: title.trim(),
@@ -90,6 +102,7 @@ function CreateTaskModal({ isOpen, onClose, onCreateTask, onUpdateTask, onDelete
       // Reset form
       setTitle('')
       setDescription('')
+      setTitleError('')
       const currentUser = getCurrentUser()
       if (currentUser && currentUser.status && currentUser.status.length > 0) {
         setStatus(currentUser.status[0].name)
@@ -103,6 +116,7 @@ function CreateTaskModal({ isOpen, onClose, onCreateTask, onUpdateTask, onDelete
   const handleClose = () => {
     setTitle('')
     setDescription('')
+    setTitleError('')
     const currentUser = getCurrentUser()
     if (currentUser && currentUser.status && currentUser.status.length > 0) {
       setStatus(currentUser.status[0].name)
@@ -172,21 +186,29 @@ function CreateTaskModal({ isOpen, onClose, onCreateTask, onUpdateTask, onDelete
           {/* Description Section - Contains Task Title and Status */}
           <div className="flex flex-col w-full max-w-[400px] gap-[24px] opacity-100">
             {/* Task Title Box */}
-            <div className="flex flex-col w-full h-[54px] gap-1 opacity-100">
+            <div className="flex flex-col w-full gap-1 opacity-100">
               <Label htmlFor="task-title" className="font-primary text-sm font-[400] text-foreground">
                 {t('dashboard.taskTitle')}
               </Label>
               <Input
                 id="task-title"
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={(e) => {
+                  setTitle(e.target.value)
+                  // Clear error when user starts typing
+                  if (titleError) {
+                    setTitleError('')
+                  }
+                }}
                 placeholder={t('dashboard.taskTitlePlaceholder')}
                 className={cn(
                   'font-primary text-sm',
                   'text-foreground',
-                  'placeholder:text-muted-foreground',
                   'py-2',
                   !isRTL && 'px-3 pr-10',
+                  titleError 
+                    ? 'border-destructive focus-visible:ring-destructive placeholder:text-destructive' 
+                    : 'placeholder:text-muted-foreground'
                 )}
               />
             </div>

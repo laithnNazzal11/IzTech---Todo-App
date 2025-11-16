@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Star, MoreHorizontal, Loader2 } from 'lucide-react'
+import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Tooltip } from '@/components/ui/tooltip'
 import { useTranslation } from 'react-i18next'
@@ -91,9 +92,16 @@ function TaskTable({ tasks, onToggleFavorite, onStatusChange, onEdit, onDeleteSt
             <Loader2 className="h-6 w-6 animate-spin text-primary" />
           </div>
         ) : (
-          tasks.map((task) => (
-            <div
+          tasks.map((task, index) => (
+            <motion.div
               key={task.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ 
+                duration: 0.3, 
+                delay: index * 0.05,
+                ease: [0.16, 1, 0.3, 1]
+              }}
               className="grid grid-cols-[24px_1fr_0.2fr_10px] sm:grid-cols-[24px_2fr_3fr_.5fr_10px] gap-y-3 gap-x-6 sm:gap-4 py-3 border-b border-b-[hsla(180,33%,99%,1)] hover:bg-muted/50 transition-colors cursor-pointer"
             >
             <div 
@@ -173,7 +181,7 @@ function TaskTable({ tasks, onToggleFavorite, onStatusChange, onEdit, onDeleteSt
                 isDeletingStatus={isDeletingStatus}
               />
             </div>
-          </div>
+          </motion.div>
           ))
         )}
       </div>

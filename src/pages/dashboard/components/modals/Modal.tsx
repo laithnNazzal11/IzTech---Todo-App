@@ -36,7 +36,6 @@ function Modal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && !isLoading && onClose()}>
       <DialogContent
         className={cn(
-
           'items-end sm:items-center',
           !isAutoSize && 'p-0 overflow-hidden',
           isAutoSize && 'overflow-visible',

@@ -1,4 +1,5 @@
 import { Languages } from 'lucide-react'
+import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/brand/Logo'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -30,37 +31,61 @@ function DashboardHeader({ onToggleLanguage, onToggleTheme }: DashboardHeaderPro
   }
 
   return (
-    <header className="flex w-full mt-3 h-[84px] sm:h-[84px] md:h-[64px] items-center justify-between rounded-lg md:rounded-[8px] opacity-100 py-[22px] px-4 sm:py-6 sm:px-8  md:px-8">
-      <div className="w-[92.5px] h-[28px] opacity-100">
+    <motion.header 
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className="flex w-full mt-3 h-[84px] sm:h-[84px] md:h-[64px] items-center justify-between rounded-lg md:rounded-[8px] opacity-100 py-[22px] px-4 sm:py-6 sm:px-8  md:px-8"
+    >
+      <motion.div 
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.4, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+        className="w-[92.5px] h-[28px] opacity-100"
+      >
         <Logo variant="light" size="md" theme={theme} className="gap-[3.5px]" />
-      </div>
+      </motion.div>
       
-      <div className="flex items-center  h-[40px] gap-4 opacity-100">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative h-auto w-auto p-0 text-foreground hover:bg-transparent"
-          onClick={onToggleLanguage}
-          aria-label="Toggle language"
+      <motion.div 
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.4, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+        className="flex items-center  h-[40px] gap-4 opacity-100"
+      >
+        <motion.div
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
         >
-          <Languages
-            key={language}
-            className="relative left-[-0.8px] h-8 w-8 animate-toggle-theme transition-colors duration-300 ease-in-out"
-            strokeWidth={2}
-            style={{
-              color: theme === 'dark' ? 'hsla(0, 0%, 92%, 1)' : 'hsl(var(--foreground))',
-              transition: 'color 0.3s ease-in-out',
-            }}
-          />
-        </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative h-auto w-auto p-0 text-foreground hover:bg-transparent"
+            onClick={onToggleLanguage}
+            aria-label="Toggle language"
+          >
+            <Languages
+              key={language}
+              className="relative left-[-0.8px] h-8 w-8 animate-toggle-theme transition-colors duration-300 ease-in-out"
+              strokeWidth={2}
+              style={{
+                color: theme === 'dark' ? 'hsla(0, 0%, 92%, 1)' : 'hsl(var(--foreground))',
+                transition: 'color 0.3s ease-in-out',
+              }}
+            />
+          </Button>
+        </motion.div>
         
-        <Button
-          variant="ghost"
-          size="icon"
-          className="relative h-auto w-auto p-0 text-foreground hover:bg-transparent"
-          onClick={onToggleTheme}
-          aria-label="Toggle theme"
+        <motion.div
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
         >
+          <Button
+            variant="ghost"
+            size="icon"
+            className="relative h-auto w-auto p-0 text-foreground hover:bg-transparent"
+            onClick={onToggleTheme}
+            aria-label="Toggle theme"
+          >
           <svg
             key={theme}
             width="40"
@@ -88,8 +113,13 @@ function DashboardHeader({ onToggleLanguage, onToggleTheme }: DashboardHeaderPro
             </defs>
           </svg>
         </Button>
+        </motion.div>
 
-        <div className="relative flex items-center">
+        <motion.div 
+          className="relative flex items-center"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
           <Button
             ref={avatarButtonRef}
             variant="ghost"
@@ -98,7 +128,11 @@ function DashboardHeader({ onToggleLanguage, onToggleTheme }: DashboardHeaderPro
             aria-label="Profile"
             onClick={handleAvatarClick}
           >
-            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-400 via-blue-400 to-pink-400 flex items-center justify-center overflow-hidden opacity-100">
+            <motion.div 
+              className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-400 via-blue-400 to-pink-400 flex items-center justify-center overflow-hidden opacity-100"
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.6 }}
+            >
               <img
                 src={userAvatar || '/images/Avatar.png'}
                 alt="Avatar"
@@ -106,7 +140,7 @@ function DashboardHeader({ onToggleLanguage, onToggleTheme }: DashboardHeaderPro
                   ? "h-full w-full object-cover" 
                   : "h-full w-full object-contain"}
               />
-            </div>
+            </motion.div>
           </Button>
 
           <AvatarPopover
@@ -114,10 +148,10 @@ function DashboardHeader({ onToggleLanguage, onToggleTheme }: DashboardHeaderPro
             onClose={() => setIsPopoverOpen(false)}
             triggerRef={avatarButtonRef as React.RefObject<HTMLElement | null>}
           />
-        </div>
+        </motion.div>
 
-      </div>
-    </header>
+      </motion.div>
+    </motion.header>
   )
 }
 

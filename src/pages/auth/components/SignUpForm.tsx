@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Upload, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -90,15 +91,25 @@ function SignUpForm() {
   };
 
   return (
-    <div className="flex w-[640px] max-w-[640px] md:w-[360px] md:max-w-[360px] flex-col  sm:gap-[24px] md:gap-8 rounded-lg p-6 md:rounded-none md:border-0 sm:bg-transparent md:p-0">
-      <div className="flex w-full h-[116px] sm:h-[92px] flex-col gap-[12px] text-center">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className="flex w-[640px] max-w-[640px] md:w-[360px] md:max-w-[360px] flex-col  sm:gap-[24px] md:gap-8 rounded-lg p-6 md:rounded-none md:border-0 sm:bg-transparent md:p-0"
+    >
+      <motion.div 
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+        className="flex w-full h-[116px] sm:h-[92px] flex-col gap-[12px] text-center"
+      >
         <h1 className="font-primary text-[32px] font-[700] leading-[40px] tracking-[0] text-center">
           {t("auth.signUpTitle")}
         </h1>
         <p className="font-primary text-[14px] font-[400] sm:leading-[32px] leading-[24px] tracking-[0.01em] text-center text-muted-foreground">
           {t("auth.signUpSubtitle")}
         </p>
-      </div>
+      </motion.div>
 
       <form className="flex w-full flex-col md:gap-4 gap-4" onSubmit={handleSubmit}>
         {/* Avatar Upload Section */}
@@ -170,7 +181,12 @@ function SignUpForm() {
         )}
 
         {/* Form Fields */}
-        <div className="flex flex-col gap-2">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col gap-2"
+        >
           <Label htmlFor="name">{t("auth.name")}</Label>
           <Input
             id="name"
@@ -183,8 +199,13 @@ function SignUpForm() {
             disabled={isLoading}
             className={cn(isLoading && "cursor-not-allowed opacity-50")}
           />
-        </div>
-        <div className="flex flex-col gap-2">
+        </motion.div>
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col gap-2"
+        >
           <Label htmlFor="email">{t("auth.email")}</Label>
           <Input
             id="email"
@@ -197,8 +218,13 @@ function SignUpForm() {
             disabled={isLoading}
             className={cn(isLoading && "cursor-not-allowed opacity-50")}
           />
-        </div>
-        <div className="flex flex-col gap-2">
+        </motion.div>
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.3, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col gap-2"
+        >
           <Label htmlFor="password">{t("auth.password")}</Label>
           <Input
             id="password"
@@ -215,29 +241,39 @@ function SignUpForm() {
           <p className="font-primary text-[12px] font-[400] leading-[16px] tracking-[0] text-muted-foreground">
             {t("auth.passwordHint")}
           </p>
-        </div>
+        </motion.div>
 
         {/* Submit Button and Footer */}
-        <div className="flex flex-col sm:gap-4 md:gap-4 lg:gap-4 gap-[40px]">
-          <Button 
-            type="submit"
-            disabled={isLoading}
-            className={cn(
-              "sm:mt-4 mt-0 h-[36px] w-full rounded-md py-[6px] px-[3px] font-primary text-sm font-[700] transition-all",
-              isLoading
-                ? "bg-primary/70 text-primary-foreground cursor-wait"
-                : "bg-primary text-primary-foreground hover:bg-primary/90"
-            )}
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col sm:gap-4 md:gap-4 lg:gap-4 gap-[40px]"
+        >
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
-            {isLoading ? (
-              <div className="flex items-center justify-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span>{t("auth.signingUp")}</span>
-              </div>
-            ) : (
-              t("auth.signUp")
-            )}
-          </Button>
+            <Button 
+              type="submit"
+              disabled={isLoading}
+              className={cn(
+                "sm:mt-4 mt-0 h-[36px] w-full rounded-md py-[6px] px-[3px] font-primary text-sm font-[700] transition-all",
+                isLoading
+                  ? "bg-primary/70 text-primary-foreground cursor-wait"
+                  : "bg-primary text-primary-foreground hover:bg-primary/90"
+              )}
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>{t("auth.signingUp")}</span>
+                </div>
+              ) : (
+                t("auth.signUp")
+              )}
+            </Button>
+          </motion.div>
           <p className="flex h-[22px] w-full items-center justify-center gap-1 text-center opacity-100">
             <span className="font-primary text-[14px] font-[400] leading-[160%] tracking-[0] text-muted-foreground">
               {t("auth.signInPrompt")}{" "}
@@ -249,9 +285,9 @@ function SignUpForm() {
               {t("auth.signInLink")}
             </Link>
           </p>
-        </div>
+        </motion.div>
       </form>
-    </div>
+    </motion.div>
   );
 }
 

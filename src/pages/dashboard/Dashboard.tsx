@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
 import { Plus } from 'lucide-react'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
@@ -295,7 +296,12 @@ function Dashboard() {
   }
 
   return (
-    <section className="flex h-screen w-full flex-col bg-background text-foreground px-[8px] sm:px-4 md:px-0 overflow-hidden">
+    <motion.section 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      className="flex h-screen w-full flex-col bg-background text-foreground px-[8px] sm:px-4 md:px-0 overflow-hidden"
+    >
       {/* Top Container */}
       <div className="w-full flex-shrink-0">
         <DashboardHeader
@@ -312,19 +318,28 @@ function Dashboard() {
               onCreateClick={() => setIsCreateStatusModalOpen(true)} 
             />
           ) : (
-            /* My Tasks Section */
-            <div className={cn("flex flex-col gap-[24px]", isTasksEmpty && "h-full")}>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+              className={cn("flex flex-col gap-[24px]", isTasksEmpty && "h-full")}
+            >
               <div className="flex items-center justify-between">
                 <h1 className="font-primary text-[24px] font-[700] leading-[32px] tracking-[0] text-foreground">
                   {t('dashboard.myTasks')}
                 </h1>
-                <Button
-                  onClick={() => setIsCreateTaskModalOpen(true)}
-                  className="w-12 h-8 gap-2 py-2 px-1 rounded-md opacity-100 transition-all duration-200 bg-[hsla(350,96%,43%,1)] shadow-[0px_1px_2px_0px_hsla(0,0%,0%,0.06),0px_1px_3px_0px_hsla(0,0%,0%,0.1)] hover:bg-[hsla(350,96%,38%,1)] hover:shadow-[0px_2px_4px_0px_hsla(0,0%,0%,0.1),0px_2px_6px_0px_hsla(0,0%,0%,0.15)] sm:w-[142px] sm:h-[36px] sm:bg-primary sm:text-primary-foreground sm:shadow-none sm:hover:bg-primary/90 sm:hover:shadow-[0px_2px_4px_0px_hsla(0,0%,0%,0.1)]"
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <Plus className="h-4 w-4 text-white sm:hidden" />
-                  <span className="hidden sm:inline">{t('dashboard.createNewTask')}</span>
-                </Button>
+                  <Button
+                    onClick={() => setIsCreateTaskModalOpen(true)}
+                    className="w-12 h-8 gap-2 py-2 px-1 rounded-md opacity-100 transition-all duration-200 bg-[hsla(350,96%,43%,1)] shadow-[0px_1px_2px_0px_hsla(0,0%,0%,0.06),0px_1px_3px_0px_hsla(0,0%,0%,0.1)] hover:bg-[hsla(350,96%,38%,1)] hover:shadow-[0px_2px_4px_0px_hsla(0,0%,0%,0.1),0px_2px_6px_0px_hsla(0,0%,0%,0.15)] sm:w-[142px] sm:h-[36px] sm:bg-primary sm:text-primary-foreground sm:shadow-none sm:hover:bg-primary/90 sm:hover:shadow-[0px_2px_4px_0px_hsla(0,0%,0%,0.1)]"
+                  >
+                    <Plus className="h-4 w-4 text-white sm:hidden" />
+                    <span className="hidden sm:inline">{t('dashboard.createNewTask')}</span>
+                  </Button>
+                </motion.div>
               </div>
 
               {/* Search and Filter */}
@@ -377,7 +392,7 @@ function Dashboard() {
                   </div>
                 </>
               )}
-            </div>
+            </motion.div>
           )}
         </DashboardContent>
       </div>
@@ -402,7 +417,7 @@ function Dashboard() {
         onCreateStatus={handleCreateStatus}
         isLoading={isCreatingStatus}
       />
-    </section>
+    </motion.section>
   )
 }
 
