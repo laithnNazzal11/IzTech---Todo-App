@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Star, MoreHorizontal, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Tooltip } from '@/components/ui/tooltip'
 import { useTranslation } from 'react-i18next'
 import { getCurrentUser } from '@/utils/auth'
 import type { Task, Status } from '@/types'
@@ -110,10 +111,14 @@ function TaskTable({ tasks, onToggleFavorite, onStatusChange, onEdit, onDeleteSt
               )}
             </div>
             <div className="font-primary text-sm text-foreground flex items-center min-w-0 overflow-hidden">
-              <span className="truncate">{task.title}</span>
+              <Tooltip content={task.title}>
+                <span className="truncate block w-full">{task.title}</span>
+              </Tooltip>
             </div>
             <div className="font-primary text-sm text-muted-foreground hidden sm:flex sm:items-center min-w-0 overflow-hidden">
-              <span className="truncate">{task.description || ''}</span>
+              <Tooltip content={task.description || ''}>
+                <span className="truncate block w-full">{task.description || ''}</span>
+              </Tooltip>
             </div>
             <div className="flex items-center justify-center gap-[10px]">
               {/* Mobile: Small colored box */}
